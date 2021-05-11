@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/vehicleListFragment">
+
+    <fragment
+        android:id="@+id/vehicleListFragment"
+        android:name="com.example.vehicleapp.ui.fragment.VehicleListFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_vehicle_list">
+        <action
+            android:id="@+id/action_vehicleListFragment_to_vehicleDetailFragment"
+            app:destination="@id/vehicleDetailFragment"
+            app:exitAnim="@anim/fragment_fade_exit" />
+    </fragment>
+    <fragment
+        android:id="@+id/vehicleDetailFragment"
+        android:name="com.example.vehicleapp.ui.fragment.VehicleDetailFragment"
+        android:label="Vehicle Detail"
+        tools:layout="@layout/fragment_vehicle_detail">
+    </fragment>
+</navigation>

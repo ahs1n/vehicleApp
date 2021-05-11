@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.fragment.VehicleDetailFragment">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="vehicleItem"
+            type="com.example.vehicleapp.model.VehiclesItem" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_10sdp">
+
+            <EditText
+                android:id="@+id/updateDriverName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz "
+                android:ems="10"
+                android:enabled="false"
+                android:hint="Driver Name"
+                android:inputType="textPersonName"
+                android:text="@{vehicleItem.driverName}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.edittextpicker.aliazaz.EditTextPicker
+                android:id="@+id/updateVehicleNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:enabled="false"
+                android:hint="Vehicle No"
+                android:text="@{vehicleItem.vehicleNo}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/updateDriverName"
+                app:mask="##-####" />
+
+            <io.blackbox_vision.datetimepickeredittext.view.DatePickerEditText
+                android:id="@+id/updateDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:enabled="false"
+                android:gravity="center"
+                android:hint="dd/mm/yyyy"
+                android:inputType="date"
+                app:dateFormat="dd-MM-yyyy"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/updateVehicleNo"
+                app:maxDate="CR_DATE"
+                app:minDate="CR_DATE" />
+
+            <EditText
+                android:id="@+id/updateMeterIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:enabled="false"
+                android:hint="Meter In"
+                android:inputType="number"
+                android:maxLength="6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/updateDate" />
+
+            <EditText
+                android:id="@+id/updateMeterOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="Meter Out"
+                android:inputType="number"
+                android:maxLength="6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/updateMeterIn" />
+
+            <EditText
+                android:id="@+id/updateRemarks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="Remarks"
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.502"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/updateMeterOut" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/updateTimeIn"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@color/teal_700"
+                android:text="Time In"
+                app:layout_constraintBottom_toBottomOf="@+id/updateTimeOut"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/updateRemarks" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/updateTimeOut"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                android:backgroundTint="@color/teal_200"
+                android:text="Time Out"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/updateRemarks" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

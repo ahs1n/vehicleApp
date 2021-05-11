@@ -1,0 +1,22 @@
+[
+  {
+    "col_id": 1,
+    "col_dt": "2021-05-03 00:00:00.000",
+    "vehicleNo": "abc-123",
+    "driverCNIC": "11111-1111111-1",
+    "driverName": "Khan",
+    "startDate": "2021-02-04",
+    "endDate": null,
+    "syncStatus": 0
+  },
+  {
+    "col_id": 2,
+    "col_dt": "2021-05-03 00:00:00.000",
+    "vehicleNo": "xyz-234",
+    "driverCNIC": "22222-2222222-2",
+    "driverName": "Jhon",
+    "startDate": "2021-02-04",
+    "endDate": null,
+    "syncStatus": 0
+  }
+]
