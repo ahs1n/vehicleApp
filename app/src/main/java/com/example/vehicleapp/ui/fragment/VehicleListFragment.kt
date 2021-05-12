@@ -177,6 +177,7 @@ class VehicleListFragment : FragmentBase() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.findItem(R.id.search_menu).isVisible = true
+        menu.findItem(R.id.download_menu).isVisible = true
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -192,6 +193,10 @@ class VehicleListFragment : FragmentBase() {
                     translationY(if (bi.nestedScrollView.translationY == actionBarHeight.toFloat() / 2) 10f else actionBarHeight.toFloat() / 2)
                 }.start()
 
+                true
+            }
+            R.id.download_menu -> {
+                viewModel.downloadingVehicles()
                 true
             }
             else -> super.onOptionsItemSelected(item)
