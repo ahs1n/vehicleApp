@@ -111,7 +111,7 @@ class VehicleListFragment : FragmentBase() {
 
                     }*/
 
-                    bi.multiStateView.viewState = MultiStateView.ViewState.ERROR
+//                    bi.multiStateView.viewState = MultiStateView.ViewState.ERROR
                 }
                 ResponseStatus.LOADING -> {
                     MultiStateView.ViewState.LOADING

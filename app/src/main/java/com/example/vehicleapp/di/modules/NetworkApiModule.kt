@@ -2,6 +2,8 @@ package com.example.vehicleapp.di.modules
 
 import com.example.vehicleapp.di.auth.AuthApi
 import com.example.vehicleapp.utils.CONSTANTS.BASE_URL
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -9,6 +11,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Singleton
 
 
@@ -29,11 +32,13 @@ class NetworkApiModule {
     fun buildRetrofitClient(
         okHttpClient: OkHttpClient,
         coroutineCallAdapterFactory: CoroutineCallAdapterFactory,
-        gsonConverterFactory: GsonConverterFactory
+        gsonConverterFactory: GsonConverterFactory,
+        scalarsConverterFactory: ScalarsConverterFactory,
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
+            .addConverterFactory(scalarsConverterFactory)
             .addConverterFactory(gsonConverterFactory)
             .addCallAdapterFactory(coroutineCallAdapterFactory)
             .build()
@@ -53,8 +58,23 @@ class NetworkApiModule {
 
     @Provides
     @Singleton
-    fun getGsonConverterFactory(): GsonConverterFactory {
-        return GsonConverterFactory.create()
+    fun getGsonConverterFactory(gson: Gson): GsonConverterFactory {
+        return GsonConverterFactory.create(gson)
+    }
+
+
+    @Provides
+    @Singleton
+    fun getScalerConverterFactory(): ScalarsConverterFactory {
+        return ScalarsConverterFactory.create()
+    }
+
+    @Provides
+    @Singleton
+    fun getGsonBuilder(): Gson {
+        return GsonBuilder()
+            .setLenient()
+            .create();
     }
 
     @Provides

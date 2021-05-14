@@ -3,11 +3,12 @@ package com.example.vehicleapp.base.repository
 import com.example.vehicleapp.di.auth.AuthApi
 import com.example.vehicleapp.di.local.VehicleDao
 import com.example.vehicleapp.model.Users
-import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.Vehicles
 import com.example.vehicleapp.model.VehiclesItem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -22,22 +23,16 @@ class GeneralRepository @Inject constructor(
         table: String
     ): Flow<Users> {
         return flow {
-            emit(
-                apiService.getServerData(
-                    table = table
-                )
-            )
+//            emit(
+//                apiService.getServerData(
+//                    table = table
+//                )
+//            )
         }
     }
 
-    override suspend fun getAllVehiclesFromRemote(table: String): Flow<Vehicles> {
-        return flow {
-            emit(
-                apiService.getServerData(
-                    table = table
-                )
-            )
-        }
+    override suspend fun getAllVehiclesFromRemote(table: String) = withContext(Dispatchers.IO) {
+        vehicleDao.updateVehiclesData(apiService.getVehicleServerData())
     }
 
     override suspend fun getAllVehiclesFromDB(): Flow<List<VehiclesItem>> {

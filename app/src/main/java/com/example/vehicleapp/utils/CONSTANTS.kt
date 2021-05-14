@@ -11,7 +11,7 @@ object CONSTANTS {
     /*
     * URL's
     * */
-    const val BASE_URL = "http://f38158/fr/vd/"
+    const val BASE_URL = "http://10.1.42.61/fr/vd/"
 
     /*
     * Tables

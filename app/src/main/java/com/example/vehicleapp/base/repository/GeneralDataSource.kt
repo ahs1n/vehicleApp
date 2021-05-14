@@ -26,7 +26,7 @@ interface GeneralDataSource {
     * */
     suspend fun getAllVehiclesFromRemote(
         table: String
-    ): Flow<Vehicles>
+    )
 
     suspend fun getAllVehiclesFromDB(): Flow<List<VehiclesItem>>
 

@@ -1,5 +1,8 @@
 package com.example.vehicleapp.di.auth
 
+import com.example.vehicleapp.model.Vehicles
+import com.example.vehicleapp.utils.CONSTANTS
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -8,10 +11,8 @@ import retrofit2.http.Query
  */
 interface AuthApi {
 
-    @GET(ApiRoutes.GET_DATA)
-    suspend fun <T> getServerData(
-        @Query("table") table: String,
-    ): T
+    @GET(ApiRoutes.GET_DATA + CONSTANTS.VEHICLE_TABLE)
+    suspend fun getVehicleServerData(): Vehicles
 
 
 }

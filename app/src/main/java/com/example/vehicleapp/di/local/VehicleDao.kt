@@ -1,8 +1,6 @@
 package com.example.vehicleapp.di.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.Vehicles
 import com.example.vehicleapp.model.VehiclesItem
 import kotlinx.coroutines.flow.Flow
@@ -10,8 +8,17 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface VehicleDao {
 
-    /*@Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addVehicle(vehicle: Vehicle)*/
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertAllVehicles(vehicles: Vehicles)
+
+    @Query("DELETE FROM vehicle_driver")
+    fun deleteAllVehicles()
+
+    @Transaction
+    fun updateVehiclesData(vehicles: Vehicles) {
+        deleteAllVehicles()
+        insertAllVehicles(vehicles)
+    }
 
     /*@Update
     suspend fun updateVehicle(vehicle: Vehicle)*/
