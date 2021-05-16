@@ -18,4 +18,11 @@
         app:iconTint="@color/grayDark"
         app:showAsAction="always"
         tools:visible="true" />
+    <item
+        android:id="@+id/logout_menu"
+        android:icon="@drawable/ic_logout"
+        android:title="LogOut"
+        android:visible="false"
+        app:iconTint="@color/grayDark"
+        app:showAsAction="always" />
 </menu>

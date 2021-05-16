@@ -3,6 +3,7 @@ package com.example.vehicleapp.base.repository
 import com.example.vehicleapp.di.auth.AuthApi
 import com.example.vehicleapp.di.local.VehicleDao
 import com.example.vehicleapp.model.Users
+import com.example.vehicleapp.model.UsersItem
 import com.example.vehicleapp.model.Vehicles
 import com.example.vehicleapp.model.VehiclesItem
 import kotlinx.coroutines.Dispatchers
@@ -28,14 +29,9 @@ class GeneralRepository @Inject constructor(
 
     override suspend fun getAllVehiclesFromRemote(
     ) = withContext(Dispatchers.IO) {
-        val v = Vehicles()
-        v.addAll(
+        vehicleDao.updateVehiclesData(
             apiService.getVehicleServerData()
         )
-        vehicleDao.updateVehiclesData(
-            v
-        )
-
     }
 
     override suspend fun getAllVehiclesFromDB(): Flow<List<VehiclesItem>> {
@@ -45,5 +41,10 @@ class GeneralRepository @Inject constructor(
     override suspend fun getSearchVehicleFromDB(vehicleNo: String): Flow<List<VehiclesItem>> {
         return vehicleDao.readSpecificVehicle(vehicleNo)
     }
+
+    override suspend fun getLoginInformation(username: String, password: String): UsersItem =
+        withContext(Dispatchers.IO) {
+            vehicleDao.readUserExist(username, password)
+        }
 
 }

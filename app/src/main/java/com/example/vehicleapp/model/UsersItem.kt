@@ -13,6 +13,6 @@ data class UsersItem(
     val id: Int,
 
     @Expose val full_name: String,
-    @Expose val password: String,
+    @Expose val password: String?,
     @Expose val username: String
 ) : Parcelable

@@ -2,6 +2,7 @@ package com.example.vehicleapp.di.local
 
 import androidx.room.*
 import com.example.vehicleapp.model.Users
+import com.example.vehicleapp.model.UsersItem
 import com.example.vehicleapp.model.Vehicles
 import com.example.vehicleapp.model.VehiclesItem
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +25,12 @@ interface VehicleDao {
         insertAllVehicles(vehicles)
     }
 
+    @Query("SELECT * FROM vehicle_driver WHERE vehicleNo LIKE :vehicleNo ORDER BY id ASC")
+    fun readSpecificVehicle(vehicleNo: String): Flow<List<VehiclesItem>>
+
+    @Query("SELECT * FROM vehicle_driver")
+    fun readAllVehicles(): Flow<List<VehiclesItem>>
+
     /*
     * Users
     * */
@@ -39,12 +46,8 @@ interface VehicleDao {
         insertAllUsers(users)
     }
 
-
-    @Query("SELECT * FROM vehicle_driver WHERE vehicleNo LIKE :vehicleNo ORDER BY id ASC")
-    fun readSpecificVehicle(vehicleNo: String): Flow<List<VehiclesItem>>
-
-    @Query("SELECT * FROM vehicle_driver")
-    fun readAllVehicles(): Flow<List<VehiclesItem>>
+    @Query("SELECT full_name,username,id FROM users WHERE username = :username and password=:password")
+    fun readUserExist(username: String, password: String): UsersItem
 
     /*@Query("SELECT * FROM vehicle_driver")
     fun readAllVehicles(): Flow<List<VehicleAttendance>>*/

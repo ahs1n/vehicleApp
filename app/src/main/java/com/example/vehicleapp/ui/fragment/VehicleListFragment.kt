@@ -14,10 +14,12 @@ import com.example.vehicleapp.base.FragmentBase
 import com.example.vehicleapp.base.repository.ResponseStatus
 import com.example.vehicleapp.base.viewmodel.VehicleViewModel
 import com.example.vehicleapp.databinding.FragmentVehicleListBinding
+import com.example.vehicleapp.di.shared.SharedStorage
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.utils.hideKeyboard
 import com.example.vehicleapp.utils.obtainViewModel
+import com.example.vehicleapp.utils.showSnackBar
 import com.kennyc.view.MultiStateView
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,6 +30,7 @@ class VehicleListFragment : FragmentBase() {
     lateinit var viewModel: VehicleViewModel
     lateinit var adapter: VehicleListAdapter
     lateinit var bi: FragmentVehicleListBinding
+    lateinit var activity: MainActivity
     var actionBarHeight = 0
 
     override fun onCreateView(
@@ -70,8 +73,9 @@ class VehicleListFragment : FragmentBase() {
         /*
         * Obtaining ViewModel
         * */
+        activity = MainActivity()
         viewModel = obtainViewModel(
-            activity as MainActivity,
+            activity,
             VehicleViewModel::class.java,
             viewModelFactory
         )
@@ -178,6 +182,7 @@ class VehicleListFragment : FragmentBase() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.findItem(R.id.search_menu).isVisible = true
         menu.findItem(R.id.download_menu).isVisible = true
+        menu.findItem(R.id.logout_menu).isVisible = true
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -197,6 +202,15 @@ class VehicleListFragment : FragmentBase() {
             }
             R.id.download_menu -> {
                 viewModel.downloadingVehicles()
+                true
+            }
+            R.id.logout_menu -> {
+                bi.nestedScrollView.showSnackBar(
+                    message = "Are you sure you want to logout from this app?",
+                    action = "LogOut"
+                ) {
+                    SharedStorage.setLogOutUser(activity)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

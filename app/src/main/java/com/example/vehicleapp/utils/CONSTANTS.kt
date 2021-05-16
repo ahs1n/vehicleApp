@@ -19,4 +19,10 @@ object CONSTANTS {
     const val VEHICLE_TABLE = "vehicle_driver"
     const val USER_TABLE = "users"
     const val ATTENDANCE_TABLE = "attendance"
+
+    /*
+    * Login
+    * */
+    const val LOGIN_USERNAME = "login_username"
+    const val LOGIN_FLAG = "login_flag"
 }

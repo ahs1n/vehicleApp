@@ -25,6 +25,7 @@ class VehicleDetailFragment : FragmentBase() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.findItem(R.id.search_menu).isVisible = false
         menu.findItem(R.id.download_menu).isVisible = false
+        menu.findItem(R.id.logout_menu).isVisible = false
         super.onPrepareOptionsMenu(menu)
     }
 
