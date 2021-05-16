@@ -1,5 +1,6 @@
 package com.example.vehicleapp.di.auth
 
+import com.example.vehicleapp.model.Users
 import com.example.vehicleapp.model.Vehicles
 import com.example.vehicleapp.utils.CONSTANTS
 import retrofit2.Response
@@ -13,6 +14,9 @@ interface AuthApi {
 
     @GET(ApiRoutes.GET_DATA + CONSTANTS.VEHICLE_TABLE)
     suspend fun getVehicleServerData(): Vehicles
+
+    @GET(ApiRoutes.GET_DATA + CONSTANTS.USER_TABLE)
+    suspend fun getUserServerData(): Users
 
 
 }

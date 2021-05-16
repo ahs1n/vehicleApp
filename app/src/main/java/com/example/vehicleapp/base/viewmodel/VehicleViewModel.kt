@@ -49,7 +49,7 @@ class VehicleViewModel @Inject constructor(
     * */
     fun downloadingVehicles() {
         viewModelScope.launch {
-            vehicleUseCaseRemote.invoke(CONSTANTS.VEHICLE_TABLE)
+            vehicleUseCaseRemote.invoke()
         }
     }
 

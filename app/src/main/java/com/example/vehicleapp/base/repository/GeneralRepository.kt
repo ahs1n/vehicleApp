@@ -20,19 +20,22 @@ class GeneralRepository @Inject constructor(
 ) : GeneralDataSource {
 
     override suspend fun getAllUsers(
-        table: String
-    ): Flow<Users> {
-        return flow {
-//            emit(
-//                apiService.getServerData(
-//                    table = table
-//                )
-//            )
-        }
+    ) = withContext(Dispatchers.IO) {
+        vehicleDao.updateUsersData(
+            apiService.getUserServerData()
+        )
     }
 
-    override suspend fun getAllVehiclesFromRemote(table: String) = withContext(Dispatchers.IO) {
-        vehicleDao.updateVehiclesData(apiService.getVehicleServerData())
+    override suspend fun getAllVehiclesFromRemote(
+    ) = withContext(Dispatchers.IO) {
+        val v = Vehicles()
+        v.addAll(
+            apiService.getVehicleServerData()
+        )
+        vehicleDao.updateVehiclesData(
+            v
+        )
+
     }
 
     override suspend fun getAllVehiclesFromDB(): Flow<List<VehiclesItem>> {

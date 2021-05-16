@@ -15,8 +15,7 @@ interface GeneralDataSource {
     * Get all users from server
     * */
     suspend fun getAllUsers(
-        table: String
-    ): Flow<Users>
+    )
     /*
     * Get all users from server End
     * */
@@ -25,7 +24,6 @@ interface GeneralDataSource {
     * Get all vehicles
     * */
     suspend fun getAllVehiclesFromRemote(
-        table: String
     )
 
     suspend fun getAllVehiclesFromDB(): Flow<List<VehiclesItem>>
