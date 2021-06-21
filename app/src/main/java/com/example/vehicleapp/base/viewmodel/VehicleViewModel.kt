@@ -1,6 +1,5 @@
 package com.example.vehicleapp.base.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,10 +7,7 @@ import com.example.vehicleapp.base.repository.ResponseStatusCallbacks
 import com.example.vehicleapp.base.viewmodel.usecases.SearchVehicleUseCaseLocal
 import com.example.vehicleapp.base.viewmodel.usecases.VehicleUseCaseRemote
 import com.example.vehicleapp.base.viewmodel.usecases.VehicleUseCaseLocal
-import com.example.vehicleapp.model.Vehicles
 import com.example.vehicleapp.model.VehiclesItem
-import com.example.vehicleapp.utils.CONSTANTS
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
@@ -38,6 +34,8 @@ class VehicleViewModel @Inject constructor(
     val selectedVehicleResponse: MutableLiveData<ResponseStatusCallbacks<VehiclesItem>>
         get() = _selectedVehicle
 
+    val apiDownloadingDataProgress = MutableLiveData<Boolean>().apply { value = false }
+
     private var searchVehicle = StringUtils.EMPTY
 
     init {
@@ -48,9 +46,14 @@ class VehicleViewModel @Inject constructor(
     * downloading vehicles data
     * */
     fun downloadingVehicles() {
+        apiDownloadingDataProgress(true)
         viewModelScope.launch {
             vehicleUseCaseRemote.invoke()
         }
+    }
+
+    private fun apiDownloadingDataProgress(flag: Boolean) {
+        apiDownloadingDataProgress.value = flag
     }
 
     /*
@@ -61,6 +64,9 @@ class VehicleViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 vehicleUseCaseLocal().collect { dataset ->
+
+                    apiDownloadingDataProgress(false)
+
                     if (dataset.isNullOrEmpty())
                         _vehicleList.value = ResponseStatusCallbacks.error(
                             data = null,

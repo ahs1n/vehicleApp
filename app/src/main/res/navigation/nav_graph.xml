@@ -12,8 +12,7 @@
         tools:layout="@layout/fragment_vehicle_list">
         <action
             android:id="@+id/action_vehicleListFragment_to_vehicleDetailFragment"
-            app:destination="@id/vehicleDetailFragment"
-            app:exitAnim="@anim/fragment_fade_exit" />
+            app:destination="@id/vehicleDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/vehicleDetailFragment"

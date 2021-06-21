@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.viewholder.VehicleViewHolder
-import kotlinx.android.synthetic.main.item_driver_layout.view.*
+import kotlinx.android.synthetic.main.item_vehicle_layout.view.*
 
 /**
  * @author AliAzazAlam on 5/4/2021.

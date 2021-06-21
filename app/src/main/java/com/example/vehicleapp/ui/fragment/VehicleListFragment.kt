@@ -1,11 +1,14 @@
 package com.example.vehicleapp.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.library.baseAdapters.BR
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vehicleapp.R
@@ -17,10 +20,12 @@ import com.example.vehicleapp.databinding.FragmentVehicleListBinding
 import com.example.vehicleapp.di.shared.SharedStorage
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.ui.MainActivity
-import com.example.vehicleapp.utils.hideKeyboard
-import com.example.vehicleapp.utils.obtainViewModel
-import com.example.vehicleapp.utils.showSnackBar
+import com.example.vehicleapp.ui.login_activity.LoginActivity
+import com.example.vehicleapp.utils.*
 import com.kennyc.view.MultiStateView
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -30,7 +35,6 @@ class VehicleListFragment : FragmentBase() {
     lateinit var viewModel: VehicleViewModel
     lateinit var adapter: VehicleListAdapter
     lateinit var bi: FragmentVehicleListBinding
-    lateinit var activity: MainActivity
     var actionBarHeight = 0
 
     override fun onCreateView(
@@ -73,9 +77,8 @@ class VehicleListFragment : FragmentBase() {
         /*
         * Obtaining ViewModel
         * */
-        activity = MainActivity()
         viewModel = obtainViewModel(
-            activity,
+            activity as MainActivity,
             VehicleViewModel::class.java,
             viewModelFactory
         )
@@ -88,7 +91,7 @@ class VehicleListFragment : FragmentBase() {
         /*
         * Fetch vehicles list
         * */
-        viewModel.vehiclesResponse.observe(viewLifecycleOwner, {
+        viewModel.vehiclesResponse.observe(viewLifecycleOwner, { it ->
             when (it.status) {
                 ResponseStatus.SUCCESS -> {
                     it.data?.apply {
@@ -115,12 +118,23 @@ class VehicleListFragment : FragmentBase() {
 
                     }*/
 
-//                    bi.multiStateView.viewState = MultiStateView.ViewState.ERROR
+                    bi.multiStateView.viewState = MultiStateView.ViewState.EMPTY
                 }
                 ResponseStatus.LOADING -> {
-                    MultiStateView.ViewState.LOADING
+                    lifecycleScope.launch {
+                        MultiStateView.ViewState.LOADING
+                        delay(2000)
+                    }
                 }
             }
+
+            viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner, {
+                if (it) {
+                    CustomProgressDialog.show(requireContext())
+                } else {
+                    CustomProgressDialog.dismiss()
+                }
+            })
 
         })
 
@@ -179,6 +193,9 @@ class VehicleListFragment : FragmentBase() {
         setHasOptionsMenu(true);
     }
 
+    /*
+    * Menu items
+    * */
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.findItem(R.id.search_menu).isVisible = true
         menu.findItem(R.id.download_menu).isVisible = true
@@ -205,12 +222,21 @@ class VehicleListFragment : FragmentBase() {
                 true
             }
             R.id.logout_menu -> {
-                bi.nestedScrollView.showSnackBar(
-                    message = "Are you sure you want to logout from this app?",
-                    action = "LogOut"
-                ) {
-                    SharedStorage.setLogOutUser(activity)
-                }
+                AlertDialogFragment(
+                    title = "Are you sure you want to logout from this app?",
+                    callBack = object : CallBack {
+                        override fun actionYes() {
+                            SharedStorage.setLogOutUser(sharedPrefImpl)
+                            gotoActivityWithNoBackUp(LoginActivity::class.java)
+                        }
+
+                        override fun actionNo() {
+                        }
+
+                    }
+                ).show(
+                    this@VehicleListFragment.parentFragmentManager, AlertDialogFragment.TAG
+                )
                 true
             }
             else -> super.onOptionsItemSelected(item)

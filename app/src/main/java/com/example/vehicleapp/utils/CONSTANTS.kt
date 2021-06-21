@@ -11,12 +11,11 @@ object CONSTANTS {
     /*
     * URL's
     * */
-    const val BASE_URL = "http://10.1.42.61/fr/vd/"
 
     /*
     * Tables
     * */
-    const val VEHICLE_TABLE = "vehicle_driver"
+    const val VEHICLE_TABLE = "vehicles"
     const val USER_TABLE = "users"
     const val ATTENDANCE_TABLE = "attendance"
 

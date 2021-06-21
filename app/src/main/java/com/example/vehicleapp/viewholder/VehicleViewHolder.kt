@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vehicleapp.R
 import androidx.databinding.library.baseAdapters.BR
-import com.example.vehicleapp.databinding.ItemDriverLayoutBinding
+import com.example.vehicleapp.databinding.ItemVehicleLayoutBinding
 import com.example.vehicleapp.model.VehiclesItem
 
 /**
  * @author AliAzazAlam on 5/4/2021.
  */
-class VehicleViewHolder(private val bi: ItemDriverLayoutBinding) :
+class VehicleViewHolder(private val bi: ItemVehicleLayoutBinding) :
     RecyclerView.ViewHolder(bi.root) {
 
     fun bind(item: VehiclesItem) {
@@ -26,8 +26,8 @@ class VehicleViewHolder(private val bi: ItemDriverLayoutBinding) :
     companion object {
         fun create(viewGroup: ViewGroup): VehicleViewHolder {
             val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.item_driver_layout, viewGroup, false)
-            val binding = ItemDriverLayoutBinding.bind(view)
+                .inflate(R.layout.item_vehicle_layout, viewGroup, false)
+            val binding = ItemVehicleLayoutBinding.bind(view)
             return VehicleViewHolder(binding)
         }
     }

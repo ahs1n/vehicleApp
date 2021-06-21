@@ -10,6 +10,7 @@ import com.example.vehicleapp.base.viewmodel.VehicleViewModel
 import com.example.vehicleapp.databinding.FragmentVehicleDetailBinding
 import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.utils.obtainViewModel
+import java.util.*
 
 
 class VehicleDetailFragment : FragmentBase() {
@@ -66,13 +67,9 @@ class VehicleDetailFragment : FragmentBase() {
                         * */
                         bi.setVariable(BR.vehicleItem, item)
 
-                        /*
-                        * Show loading and wait until view is not ready
-                        * */
-                        /*lifecycleScope.launch {
-                            delay(500)
-                            bi.productImg.visibility = View.VISIBLE
-                        }*/
+                        //Set title to vehicle no
+                        requireActivity().title = item.vehicleNo.toUpperCase(Locale.ENGLISH)
+
                     }
                 }
                 ResponseStatus.ERROR -> {

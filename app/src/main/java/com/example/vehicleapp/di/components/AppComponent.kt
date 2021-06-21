@@ -1,6 +1,7 @@
 package com.example.vehicleapp.di.components
 
 import android.app.Application
+import android.content.SharedPreferences
 import com.example.vehicleapp.MainApp
 import com.example.vehicleapp.di.modules.*
 import dagger.BindsInstance
@@ -19,7 +20,8 @@ import javax.inject.Singleton
         FragmentModule::class,
         ActivityModule::class,
         GeneralRepositoryModule::class,
-        ViewModelFactoryModule::class
+        ViewModelFactoryModule::class,
+        SharedModule::class
     ]
 )
 interface AppComponent : AndroidInjector<MainApp> {

@@ -9,9 +9,10 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
-import javax.inject.Inject
 
 
 fun String.convertStringToUpperCase(): String {
@@ -59,6 +60,14 @@ fun EditText.hideKeyboard() {
 
 fun <T : AppCompatActivity> AppCompatActivity.gotoActivity(targetActivityClass: Class<T>) {
     val intent = Intent(this, targetActivityClass)
+    startActivity(intent)
+}
+
+fun <T : AppCompatActivity> Fragment.gotoActivityWithNoBackUp(targetActivityClass: Class<T>) {
+    val intent = Intent(activity, targetActivityClass)
+        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
 }
 

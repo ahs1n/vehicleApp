@@ -23,9 +23,9 @@ class LoginViewModel @Inject constructor(val loginUseCaseLocal: LoginUseCaseLoca
         viewModelScope.launch {
             try {
                 val loginData = loginUseCaseLocal(username, password)
-                _loginResponse.value = loginData.let {
+                _loginResponse.value = loginData?.let {
                     ResponseStatusCallbacks.success(data = it, "User exist")
-                }
+                } ?: ResponseStatusCallbacks.error(null, "User not exist")
             } catch (e: Exception) {
                 _loginResponse.value = ResponseStatusCallbacks.error(null, e.message.toString())
             }

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="callback"
+            type="com.example.vehicleapp.ui.fragment.VehicleListFragment" />
+
+        <variable
+            name="vehicleItem"
+            type="com.example.vehicleapp.model.VehiclesItem" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/parentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_80sdp"
+        android:layout_margin="@dimen/_5sdp"
+        android:elevation="@dimen/_1sdp"
+        app:cardCornerRadius="@dimen/_8sdp"
+        app:cardElevation="@dimen/_3sdp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/completeFlag"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:elevation="3dp"
+                android:src="@drawable/ic_incomplete_star"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="@dimen/_90sdp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/driverImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_55sdp"
+                    android:contentDescription="Transport Image"
+                    android:paddingStart="@dimen/_12sdp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/car" />
+
+                <TextView
+                    android:id="@+id/vehicleNo_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/driverImg"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="0dp"
+                    android:gravity="center"
+                    android:padding="@dimen/_1sdp"
+                    android:text="@{vehicleItem.vehicleNo}"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/teal_700"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="bold"
+                    tools:text="ABC-1234" />
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/driverName_txt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:padding="@dimen/_2sdp"
+                android:text="Owner Name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/teal_700"
+                android:textSize="@dimen/_15sdp"
+                app:layout_constraintEnd_toStartOf="@+id/timeBtn"
+                app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loadShortString="@{vehicleItem.ownerName}" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/timeBtn"
+                style="@style/Widget.AppCompat.ButtonBar.AlertDialog"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/teal_700"
+                android:text='@{vehicleItem.dataExist ? "Time Out" : "Time In"}'
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/meterInLbl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Meter In"
+                android:textColor="@color/teal_200"
+                android:textSize="@dimen/_12sdp"
+                app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+                app:layout_constraintTop_toBottomOf="@+id/driverName_txt" />
+
+            <TextView
+                android:id="@+id/meterInReading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="8dp"
+                android:hint="XX.XX"
+                android:maxLength="10"
+                android:textColor="#7f000051"
+                android:textSize="@dimen/_12sdp"
+                app:layout_constraintEnd_toStartOf="@+id/timeBtn"
+                app:layout_constraintStart_toEndOf="@+id/meterInLbl"
+                app:layout_constraintTop_toBottomOf="@+id/driverName_txt" />
+
+
+            <TextView
+                android:id="@+id/meterOutLbl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Meter Out"
+                android:textColor="@color/teal_200"
+                android:textSize="@dimen/_12sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+                app:layout_constraintTop_toBottomOf="@+id/meterInLbl" />
+
+            <TextView
+                android:id="@+id/meterOutReading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:hint="XX.XX"
+                android:maxLength="10"
+                android:textColor="#7f000051"
+                android:textSize="@dimen/_12sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/timeBtn"
+                app:layout_constraintStart_toEndOf="@+id/meterOutLbl"
+                app:layout_constraintTop_toBottomOf="@+id/meterInReading" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

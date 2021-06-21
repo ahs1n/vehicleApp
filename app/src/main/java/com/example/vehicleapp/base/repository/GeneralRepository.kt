@@ -42,7 +42,7 @@ class GeneralRepository @Inject constructor(
         return vehicleDao.readSpecificVehicle(vehicleNo)
     }
 
-    override suspend fun getLoginInformation(username: String, password: String): UsersItem =
+    override suspend fun getLoginInformation(username: String, password: String): UsersItem? =
         withContext(Dispatchers.IO) {
             vehicleDao.readUserExist(username, password)
         }

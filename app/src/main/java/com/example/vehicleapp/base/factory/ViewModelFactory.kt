@@ -20,13 +20,13 @@ class ViewModelFactory @Inject constructor(private val repository: GeneralReposi
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when {
+            modelClass.isAssignableFrom(LoginViewModel::class.java) -> LoginViewModel(
+                LoginUseCaseLocal(repository)
+            ) as T
             modelClass.isAssignableFrom(VehicleViewModel::class.java) -> VehicleViewModel(
                 VehicleUseCaseRemote(repository),
                 VehicleUseCaseLocal(repository),
                 SearchVehicleUseCaseLocal(repository),
-            ) as T
-            modelClass.isAssignableFrom(LoginActivity::class.java) -> LoginViewModel(
-                LoginUseCaseLocal(repository)
             ) as T
             else -> throw IllegalArgumentException("Unknown viewModel class $modelClass")
         }

@@ -43,12 +43,11 @@ class LoginActivity : ActivityBase(), LoginUISource {
         bi.callback = this
 //        bi.txtinstalldate.text = MainApp.appInfo.getAppInfo()
         viewModel = obtainViewModel(LoginViewModel::class.java, viewModelFactory)
-        checkPermissions()
 
         /*
         * Check if the user is already exist
         * */
-        if (SharedStorage.getLogFlag(this)) {
+        if (SharedStorage.getLogFlag(sharedPrefImpl)) {
             gotoActivity(MainActivity::class.java)
             finish()
         }
@@ -63,7 +62,7 @@ class LoginActivity : ActivityBase(), LoginUISource {
                 SUCCESS -> {
                     approval = true
                     it.data?.let { user ->
-                        SharedStorage.setLogInUserName(this, user.username)
+                        SharedStorage.setLogInUserName(sharedPrefImpl, user.username)
                     }
                     gotoActivity(MainActivity::class.java)
                 }
@@ -151,12 +150,12 @@ class LoginActivity : ActivityBase(), LoginUISource {
             }
         })
 
-        bi.loginProgress.visibility = if (show) View.VISIBLE else View.GONE
+        bi.loginProgress.visibility = if (show) View.VISIBLE else View.INVISIBLE
         bi.loginProgress.animate().setDuration(shortAnimTime.toLong()).alpha(
             if (show) 1f else 0f
         ).setListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                bi.loginProgress.visibility = if (show) View.VISIBLE else View.GONE
+                bi.loginProgress.visibility = if (show) View.VISIBLE else View.INVISIBLE
             }
         })
     }
@@ -198,7 +197,7 @@ class LoginActivity : ActivityBase(), LoginUISource {
         if (
             username == "test1234" && password == "test1234"
         ) {
-            SharedStorage.setLogInUserName(this, "test_user")
+            SharedStorage.setLogInUserName(sharedPrefImpl, "test_user")
             approval = true
         } else
             viewModel.getLoginInfoFromDB(username, password)
@@ -214,8 +213,6 @@ class LoginActivity : ActivityBase(), LoginUISource {
             return
         }
         val permissions = arrayOf(
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )

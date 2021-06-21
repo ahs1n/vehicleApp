@@ -2,16 +2,19 @@ package com.example.vehicleapp.di.shared
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
+import com.example.vehicleapp.MainApp
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /*
 * @author Mustufa.Ansari
 * @update Ali.Azaz
 * */
-open class SharedStorageBase {
+@Singleton
+class SharedStorageBase @Inject constructor(private val mSharedPreferences: SharedPreferences) {
 
-    fun put(context: Context, key: String?, objectValue: Any?) {
-        val mSharedPreferences =
-            context.getSharedPreferences(context.applicationContext.packageName, MODE_PRIVATE)
+    fun put(key: String?, objectValue: Any?) {
         val editor = mSharedPreferences.edit()
         when (objectValue) {
             is String -> editor.putString(key, objectValue)
@@ -24,9 +27,7 @@ open class SharedStorageBase {
         editor.apply()
     }
 
-    operator fun get(context: Context, key: String?, defaultObject: Any?): Any? {
-        val mSharedPreferences =
-            context.getSharedPreferences(context.applicationContext.packageName, MODE_PRIVATE)
+    operator fun get(key: String?, defaultObject: Any?): Any? {
         return when (defaultObject) {
             is String -> mSharedPreferences.getString(key, defaultObject)
             is Int -> mSharedPreferences.getInt(key, defaultObject)

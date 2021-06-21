@@ -1,13 +1,14 @@
 package com.example.vehicleapp
 
 import android.app.Application
+import android.content.SharedPreferences
 import com.example.vehicleapp.di.components.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-class MainApp : Application(), HasAndroidInjector {
+class   MainApp : Application(), HasAndroidInjector {
 
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>

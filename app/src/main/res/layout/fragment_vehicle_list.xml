@@ -16,6 +16,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="@color/purple_200"
         android:layout_height="match_parent">
 
         <com.google.android.material.card.MaterialCardView
@@ -71,6 +72,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/fldGrpMain"
+                android:background="@color/purple_200"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -92,9 +94,8 @@
                     android:id="@+id/multiStateView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:padding="@dimen/_1sdp"
+                    android:layout_marginBottom="@dimen/_8sdp"
+                    android:padding="@dimen/_5sdp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -111,8 +112,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        android:padding="@dimen/_5sdp"
-                        tools:listitem="@layout/item_driver_layout" />
+                        tools:listitem="@layout/item_vehicle_layout" />
 
                 </com.kennyc.view.MultiStateView>
 

@@ -33,7 +33,7 @@ interface GeneralDataSource {
     /*
     * For login Start
     * */
-    suspend fun getLoginInformation(username: String, password: String): UsersItem
+    suspend fun getLoginInformation(username: String, password: String): UsersItem?
     /*
     * For login End
     * */
