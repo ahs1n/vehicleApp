@@ -17,7 +17,7 @@ object SharedStorage {
     }
 
     fun getLogInUserName(sharedPrefImpl: SharedStorageBase): String {
-        return sharedPrefImpl.get(LOGIN_USERNAME, StringUtils.EMPTY) as String
+        return sharedPrefImpl[LOGIN_USERNAME, StringUtils.EMPTY] as String
     }
 
     fun setLogOutUser(sharedPrefImpl: SharedStorageBase) {

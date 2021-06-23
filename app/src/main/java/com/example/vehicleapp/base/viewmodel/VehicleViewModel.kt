@@ -4,9 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vehicleapp.base.repository.ResponseStatusCallbacks
-import com.example.vehicleapp.base.viewmodel.usecases.SearchVehicleUseCaseLocal
-import com.example.vehicleapp.base.viewmodel.usecases.VehicleUseCaseRemote
-import com.example.vehicleapp.base.viewmodel.usecases.VehicleUseCaseLocal
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.SearchVehicleUseCaseLocal
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseRemote
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseLocal
 import com.example.vehicleapp.model.VehiclesItem
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

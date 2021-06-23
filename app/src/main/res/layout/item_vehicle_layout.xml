@@ -56,10 +56,10 @@
                     android:id="@+id/driverImg"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_55sdp"
-                    android:contentDescription="Transport Image"
+                    android:contentDescription="@string/transport_image"
                     android:paddingStart="@dimen/_12sdp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/car" />
+                    android:src="@drawable/baby_car" />
 
                 <TextView
                     android:id="@+id/vehicleNo_txt"
@@ -87,14 +87,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:padding="@dimen/_2sdp"
-                android:text="Owner Name"
+                android:text="@string/vehicle_model"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/teal_700"
                 android:textSize="@dimen/_15sdp"
                 app:layout_constraintEnd_toStartOf="@+id/timeBtn"
                 app:layout_constraintStart_toEndOf="@+id/relativeLayout"
                 app:layout_constraintTop_toTopOf="parent"
-                app:loadShortString="@{vehicleItem.ownerName}" />
+                app:loadShortString="@{vehicleItem.model}" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/timeBtn"
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Meter In"
+                android:text="@string/meter_in_lbl"
                 android:textColor="@color/teal_200"
                 android:textSize="@dimen/_12sdp"
                 app:layout_constraintStart_toEndOf="@+id/relativeLayout"
@@ -142,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Meter Out"
+                android:text="@string/meter_out_lbl"
                 android:textColor="@color/teal_200"
                 android:textSize="@dimen/_12sdp"
                 app:layout_constraintBottom_toBottomOf="parent"

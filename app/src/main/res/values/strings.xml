@@ -6,4 +6,17 @@
     <string name="search_latest">Search: None</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="vehicle_model">Vehicle Model</string>
+    <string name="transport_image">Transport Image</string>
+    <string name="meter_in_lbl">Meter In</string>
+    <string name="meter_out_lbl">Meter Out</string>
+    <string name="empty_vehicle_message">Sorry no vehicle is found. Please retry after some time or tap on sync button</string>
+    <string name="driver_name">Driver Name</string>
+    <string name="today_date">Today\'s date: dd/mm/yyyy</string>
+    <string name="remarks">Remarks</string>
+    <string name="time_in">Time In</string>
+    <string name="time_out">Time Out</string>
+    <string name="search">Search</string>
+    <string name="download">Download</string>
+    <string name="logout">LogOut</string>
 </resources>

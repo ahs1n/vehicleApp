@@ -8,10 +8,14 @@ import android.os.Build
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.example.vehicleapp.MainApp
 import com.google.android.material.snackbar.Snackbar
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -98,4 +102,31 @@ fun isNetworkConnected(context: Context): Boolean {
     }
 
     return result
+}
+
+fun String.toastUtil(): Toast {
+    return Toast.makeText(MainApp.context, this, Toast.LENGTH_SHORT)
+}
+
+/*
+* Date Utils
+* */
+fun Calendar.addDays(day: Int): String {
+    this.add(Calendar.DAY_OF_YEAR, day)
+    return SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(this.time) //"dd-MM-yyyy HH:mm"
+}
+
+fun String.getCalendarDate(): Calendar {
+    val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
+    val calendar = Calendar.getInstance()
+    try {
+        val date = sdf.parse(this)
+        date?.let {
+            calendar.time = date
+        }
+        return calendar
+    } catch (e: ParseException) {
+        e.printStackTrace()
+    }
+    return calendar
 }

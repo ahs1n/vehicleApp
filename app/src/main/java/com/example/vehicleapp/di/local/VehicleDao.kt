@@ -1,9 +1,11 @@
 package com.example.vehicleapp.di.local
 
 import androidx.room.*
-import com.example.vehicleapp.model.Users
+import com.example.vehicleapp.model.Attendance
+import com.example.vehicleapp.model.utils.Users
 import com.example.vehicleapp.model.UsersItem
-import com.example.vehicleapp.model.Vehicles
+import com.example.vehicleapp.model.VehicleAttendance
+import com.example.vehicleapp.model.utils.Vehicles
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.utils.CONSTANTS
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +34,10 @@ interface VehicleDao {
     @Query("SELECT * FROM  ${CONSTANTS.VEHICLE_TABLE}")
     fun readAllVehicles(): Flow<List<VehiclesItem>>
 
+    @Transaction
+    @Query("SELECT * FROM ${CONSTANTS.VEHICLE_TABLE}")
+    fun getVehicleAndAttendance(): List<VehicleAttendance>
+
     /*
     * Users
     * */
@@ -54,5 +60,14 @@ interface VehicleDao {
     fun readAllVehicles(): Flow<List<VehicleAttendance>>*/
 
 //    @Query("SELECT * FROM attendence WHERE vehilceNo = :vehicleNo")
+
+    /*
+    * Attendance form
+    * */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertAttendanceForm(attendance: Attendance): Long
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    fun updateAttendanceForm(attendance: Attendance): Int
 
 }

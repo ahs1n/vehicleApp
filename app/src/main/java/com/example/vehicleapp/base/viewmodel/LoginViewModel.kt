@@ -4,8 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vehicleapp.base.repository.ResponseStatusCallbacks
-import com.example.vehicleapp.base.viewmodel.usecases.LoginUseCaseLocal
-import com.example.vehicleapp.model.Users
+import com.example.vehicleapp.base.viewmodel.login_usecases.LoginUseCaseLocal
 import com.example.vehicleapp.model.UsersItem
 import kotlinx.coroutines.launch
 import javax.inject.Inject

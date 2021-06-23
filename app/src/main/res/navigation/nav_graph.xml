@@ -17,7 +17,14 @@
     <fragment
         android:id="@+id/vehicleDetailFragment"
         android:name="com.example.vehicleapp.ui.fragment.VehicleDetailFragment"
-        android:label="Vehicle Detail"
         tools:layout="@layout/fragment_vehicle_detail">
+        <argument
+            android:name="selectedVehicle"
+            app:argType="com.example.vehicleapp.model.VehiclesItem" />
+        <argument
+            android:name="attendanceVehicle"
+            app:argType="com.example.vehicleapp.model.Attendance"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

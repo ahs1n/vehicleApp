@@ -179,8 +179,7 @@ class VehicleListFragment : FragmentBase() {
     private fun callingRecyclerView() {
         adapter = VehicleListAdapter(object : VehicleListAdapter.OnItemClickListener {
             override fun onItemClick(item: VehiclesItem, position: Int) {
-                viewModel.setSelectedVehicle(item)
-                findNavController().navigate(VehicleListFragmentDirections.actionVehicleListFragmentToVehicleDetailFragment())
+                findNavController().navigate(VehicleListFragmentDirections.actionVehicleListFragmentToVehicleDetailFragment(item,null))
             }
         })
         adapter.stateRestorationPolicy =

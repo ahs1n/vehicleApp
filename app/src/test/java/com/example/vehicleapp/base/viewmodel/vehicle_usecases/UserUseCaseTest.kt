@@ -1,16 +1,9 @@
-package com.example.vehicleapp.base.viewmodel.usecases
+package com.example.vehicleapp.base.viewmodel.vehicle_usecases
 
-import com.example.vehicleapp.MockTestUtil
 import com.example.vehicleapp.base.repository.GeneralRepository
 import io.mockk.MockKAnnotations
-import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

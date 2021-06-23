@@ -2,13 +2,11 @@ package com.example.vehicleapp.base.repository
 
 import com.example.vehicleapp.di.auth.AuthApi
 import com.example.vehicleapp.di.local.VehicleDao
-import com.example.vehicleapp.model.Users
+import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.UsersItem
-import com.example.vehicleapp.model.Vehicles
 import com.example.vehicleapp.model.VehiclesItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -47,4 +45,13 @@ class GeneralRepository @Inject constructor(
             vehicleDao.readUserExist(username, password)
         }
 
+    override suspend fun insertAttendanceVehicle(attendance: Attendance): Long =
+        withContext(Dispatchers.IO) {
+            vehicleDao.insertAttendanceForm(attendance)
+        }
+
+    override suspend fun updateAttendanceVehicle(attendance: Attendance): Int =
+        withContext(Dispatchers.IO) {
+            vehicleDao.updateAttendanceForm(attendance)
+        }
 }

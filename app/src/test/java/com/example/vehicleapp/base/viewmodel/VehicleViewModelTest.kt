@@ -1,11 +1,9 @@
 package com.example.vehicleapp.base.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.example.vehicleapp.MainCoroutinesRule
-import com.example.vehicleapp.base.repository.ResponseStatusCallbacks
-import com.example.vehicleapp.base.viewmodel.usecases.VehicleUseCaseRemote
-import com.example.vehicleapp.base.viewmodel.usecases.UserUseCase
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseRemote
+import com.example.vehicleapp.base.viewmodel.login_usecases.UserUseCase
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi

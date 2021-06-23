@@ -53,6 +53,11 @@ class LoginActivity : ActivityBase(), LoginUISource {
         }
 
         /*
+        * Check permission
+        * */
+        checkPermissions()
+
+        /*
         * Get login confirmation from db. If it's null that means username or password - incorrect -
         * otherwise approve it
         *

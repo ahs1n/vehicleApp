@@ -15,7 +15,7 @@ object CONSTANTS {
     /*
     * Tables
     * */
-    const val VEHICLE_TABLE = "vehicles"
+    const val VEHICLE_TABLE = "view_vehicles"
     const val USER_TABLE = "users"
     const val ATTENDANCE_TABLE = "attendance"
 

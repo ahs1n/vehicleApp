@@ -10,13 +10,24 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = CONSTANTS.ATTENDANCE_TABLE)
 data class Attendance(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val uid: Int = 0,
 
+    /*
+    * Not accept null
+    * */
     val vehicleNo: String,
-    val driverName: String,
-    val meter_in: String,
-    val meter_out: String,
-    val remarks: String,
-    val todayDate: String
+    val deviceID: String,
+    val user: String,
 
+    /*
+    * Accept null
+    * */
+    val driverName: String? = null,
+    val meter_in: String? = null,
+    val startDate: String? = null,
+    val sysDate: String? = null,
+    val meter_out: String? = null,
+    val remarks: String? = null,
+    val appversion: String? = null,
+    val endDate: String? = null
 ) : Parcelable

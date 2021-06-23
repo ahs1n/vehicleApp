@@ -9,8 +9,14 @@
         <import type="android.view.View" />
 
         <variable
+            name="callback"
+            type="com.example.vehicleapp.ui.fragment.VehicleDetailFragment" />
+
+        <variable
             name="vehicleItem"
-            type="com.example.vehicleapp.model.VehiclesItem" />
+            type="com.example.vehicleapp.model.Attendance" />
+
+        <import type="org.apache.commons.lang3.StringUtils" />
     </data>
 
     <ScrollView
@@ -18,11 +24,12 @@
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clAttendenceForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_10sdp">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_150sdp"
@@ -37,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:digits="AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz "
                 android:ems="10"
-                android:hint="Driver Name"
+                android:hint="@string/driver_name"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
@@ -50,9 +57,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:enabled="false"
-                android:visibility="gone"
-                android:hint="Vehicle No"
                 android:text="@{vehicleItem.vehicleNo}"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/updateDriverName"
@@ -63,16 +69,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:enabled="false"
+                android:enabled="@{!StringUtils.isNotEmpty(vehicleItem.startDate)}"
                 android:gravity="center"
-                android:hint="dd/mm/yyyy"
+                android:hint="@string/today_date"
                 android:inputType="date"
                 app:dateFormat="dd-MM-yyyy"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/updateVehicleNo"
-                app:maxDate="CR_DATE"
-                app:minDate="CR_DATE" />
+                app:layout_constraintTop_toBottomOf="@+id/updateVehicleNo" />
 
             <EditText
                 android:id="@+id/updateMeterIn"
@@ -80,8 +84,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:ems="10"
-                android:enabled="false"
-                android:hint="Meter In"
+                android:enabled="@{!StringUtils.isNotEmpty(vehicleItem.meter_in)}"
+                android:hint="@string/meter_in_lbl"
                 android:inputType="number"
                 android:maxLength="6"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +98,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:ems="10"
-                android:hint="Meter Out"
+                android:enabled="@{StringUtils.isNotEmpty(vehicleItem.meter_in)}"
+                android:hint="@string/meter_out_lbl"
                 android:inputType="number"
                 android:maxLength="6"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -107,8 +112,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:ems="10"
-                android:hint="Remarks"
-                android:inputType="textPersonName"
+                android:enabled="@{!StringUtils.isNotEmpty(vehicleItem.remarks)}"
+                android:hint="@string/remarks"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine"
+                android:maxLines="3"
+                android:tag="-1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
@@ -118,11 +127,13 @@
                 android:id="@+id/updateTimeIn"
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
                 android:layout_marginTop="32dp"
                 android:backgroundTint="@color/teal_700"
-                android:text="Time In"
-                app:layout_constraintBottom_toBottomOf="@+id/updateTimeOut"
+                android:onClick="@{callback::timeInBtn}"
+                android:text="@string/time_in"
+                android:visibility="@{StringUtils.isNotEmpty(vehicleItem.meter_in) ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/updateRemarks" />
 
@@ -131,10 +142,13 @@
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:layout_marginEnd="24dp"
                 android:backgroundTint="@color/teal_200"
-                android:text="Time Out"
+                android:onClick="@{callback::timeOutBtn}"
+                android:text="@string/time_out"
+                android:visibility="@{StringUtils.isNotEmpty(vehicleItem.meter_in) ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/updateRemarks" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

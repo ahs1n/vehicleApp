@@ -3,10 +3,13 @@ package com.example.vehicleapp.base.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.vehicleapp.base.repository.GeneralRepository
+import com.example.vehicleapp.base.viewmodel.AttendanceViewModel
 import com.example.vehicleapp.base.viewmodel.LoginViewModel
 import com.example.vehicleapp.base.viewmodel.VehicleViewModel
-import com.example.vehicleapp.base.viewmodel.usecases.*
-import com.example.vehicleapp.ui.login_activity.LoginActivity
+import com.example.vehicleapp.base.viewmodel.attendance_usecases.InsertAttendanceFormUseCase
+import com.example.vehicleapp.base.viewmodel.attendance_usecases.UpdateAttendanceFormUseCase
+import com.example.vehicleapp.base.viewmodel.login_usecases.LoginUseCaseLocal
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,6 +30,10 @@ class ViewModelFactory @Inject constructor(private val repository: GeneralReposi
                 VehicleUseCaseRemote(repository),
                 VehicleUseCaseLocal(repository),
                 SearchVehicleUseCaseLocal(repository),
+            ) as T
+            modelClass.isAssignableFrom(AttendanceViewModel::class.java) -> AttendanceViewModel(
+                InsertAttendanceFormUseCase(repository),
+                UpdateAttendanceFormUseCase(repository)
             ) as T
             else -> throw IllegalArgumentException("Unknown viewModel class $modelClass")
         }

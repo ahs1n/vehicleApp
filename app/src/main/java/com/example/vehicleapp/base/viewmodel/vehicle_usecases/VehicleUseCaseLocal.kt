@@ -1,4 +1,4 @@
-package com.example.vehicleapp.base.viewmodel.usecases
+package com.example.vehicleapp.base.viewmodel.vehicle_usecases
 
 import com.example.vehicleapp.base.repository.GeneralDataSource
 import javax.inject.Inject

@@ -25,6 +25,10 @@ interface GeneralDataSource {
     suspend fun getAllVehiclesFromDB(): Flow<List<VehiclesItem>>
 
     suspend fun getSearchVehicleFromDB(vehicleNo: String): Flow<List<VehiclesItem>>
+
+    suspend fun insertAttendanceVehicle(attendance: Attendance): Long
+
+    suspend fun updateAttendanceVehicle(attendance: Attendance): Int
     /*
     * Get all vehicles End
     * */
