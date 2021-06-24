@@ -108,7 +108,7 @@ class VehicleDetailFragment : FragmentBase() {
         * */
         viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner, {
             if (it) {
-                CustomProgressDialog.show(requireContext(), "Processing Data")
+                CustomProgressDialog.show(requireContext(), getString(R.string.processing_attendance))
             } else {
                 CustomProgressDialog.dismiss()
             }
@@ -163,7 +163,7 @@ class VehicleDetailFragment : FragmentBase() {
     }
 
     fun timeOutBtn(view: View) {
-        if (Validator.emptyCheckingContainer(requireContext(), bi.clAttendenceForm)) return
+        if (!Validator.emptyCheckingContainer(requireContext(), bi.clAttendenceForm)) return
 
         val timeInAttendance = attendanceRecord?.copy(
             meter_out = bi.updateMeterOut.text.toString(),

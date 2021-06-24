@@ -7,6 +7,7 @@ import com.example.vehicleapp.base.repository.ResultCallBack
 import com.example.vehicleapp.base.viewmodel.attendance_usecases.InsertAttendanceFormUseCase
 import com.example.vehicleapp.base.viewmodel.attendance_usecases.UpdateAttendanceFormUseCase
 import com.example.vehicleapp.model.Attendance
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,6 +33,7 @@ class AttendanceViewModel @Inject constructor(
     fun insertAttendanceForm(attendance: Attendance) {
         apiDownloadingDataProgress(true)
         viewModelScope.launch {
+            delay(2000)
             val count = insertAttendanceFormUseCase.invoke(attendance).toInt()
             if (count > 0) _attendanceForm.value = ResultCallBack.Success(true)
             else _attendanceForm.value =
@@ -43,6 +45,7 @@ class AttendanceViewModel @Inject constructor(
     fun updateAttendanceForm(attendance: Attendance) {
         apiDownloadingDataProgress.value = true
         viewModelScope.launch {
+            delay(2000)
             val count = updateAttendanceFormUseCase.invoke(attendance)
             if (count == 1) _attendanceForm.value = ResultCallBack.Success(true)
             else _attendanceForm.value =

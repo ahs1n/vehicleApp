@@ -15,6 +15,10 @@
         <variable
             name="vehicleItem"
             type="com.example.vehicleapp.model.VehiclesItem" />
+
+        <variable
+            name="attendanceItem"
+            type="com.example.vehicleapp.model.Attendance" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -38,9 +42,10 @@
                 android:layout_marginStart="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:elevation="3dp"
-                android:src="@drawable/ic_incomplete_star"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:loadStatusImage="@{attendanceItem!=null}"
+                tools:src="@drawable/ic_incomplete_star" />
 
 
             <RelativeLayout
@@ -104,7 +109,7 @@
                 android:layout_gravity="end"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/teal_700"
-                android:text='@{vehicleItem.dataExist ? "Time Out" : "Time In"}'
+                android:text='@{attendanceItem != null ? "Time Out" : "Time In"}'
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -130,6 +135,7 @@
                 android:layout_marginTop="8dp"
                 android:hint="XX.XX"
                 android:maxLength="10"
+                android:text='@{attendanceItem != null ? attendanceItem.meter_in : "XX.XX"}'
                 android:textColor="#7f000051"
                 android:textSize="@dimen/_12sdp"
                 app:layout_constraintEnd_toStartOf="@+id/timeBtn"
@@ -156,6 +162,7 @@
                 android:layout_marginStart="8dp"
                 android:hint="XX.XX"
                 android:maxLength="10"
+                android:text='@{attendanceItem != null ? attendanceItem.meter_out : "XX.XX"}'
                 android:textColor="#7f000051"
                 android:textSize="@dimen/_12sdp"
                 app:layout_constraintBottom_toBottomOf="parent"

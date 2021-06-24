@@ -105,7 +105,7 @@ fun isNetworkConnected(context: Context): Boolean {
 }
 
 fun String.toastUtil(): Toast {
-    return Toast.makeText(MainApp.context, this, Toast.LENGTH_SHORT)
+    return Toast.makeText(MainApp.context, this, Toast.LENGTH_LONG)
 }
 
 /*

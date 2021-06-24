@@ -7,6 +7,7 @@ import com.example.vehicleapp.base.repository.ResponseStatusCallbacks
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.SearchVehicleUseCaseLocal
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseRemote
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseLocal
+import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -22,10 +23,10 @@ class VehicleViewModel @Inject constructor(
     private val searchVehicleUseCaseLocal: SearchVehicleUseCaseLocal
 ) : ViewModel() {
 
-    private val _vehicleList: MutableLiveData<ResponseStatusCallbacks<List<VehiclesItem>>> =
+    private val _vehicleList: MutableLiveData<ResponseStatusCallbacks<List<VehicleAttendance>>> =
         MutableLiveData()
 
-    val vehiclesResponse: MutableLiveData<ResponseStatusCallbacks<List<VehiclesItem>>>
+    val vehiclesResponse: MutableLiveData<ResponseStatusCallbacks<List<VehicleAttendance>>>
         get() = _vehicleList
 
     private val _selectedVehicle: MutableLiveData<ResponseStatusCallbacks<VehiclesItem>> =
@@ -72,11 +73,12 @@ class VehicleViewModel @Inject constructor(
                             data = null,
                             "Sorry vehicles not found"
                         )
-                    else
+                    else {
                         _vehicleList.value = ResponseStatusCallbacks.success(
                             data = dataset,
                             "Vehicles received"
                         )
+                    }
                 }
             } catch (e: Exception) {
                 _vehicleList.value = ResponseStatusCallbacks.error(null, e.message.toString())
@@ -115,9 +117,12 @@ class VehicleViewModel @Inject constructor(
     /*
     * Search function for searching vehicles by vehicle_no
     * */
-    fun searchImagesFromRemote(search: String) {
-        searchVehicle = search
-        fetchSearchVehiclesFromLocalDB(search)
+    fun searchVehicleFromDB(vehicleNo: String) {
+        searchVehicle = vehicleNo
+        if (searchVehicle == StringUtils.EMPTY) {
+            fetchVehiclesFromLocalDB()
+        } else
+            fetchSearchVehiclesFromLocalDB(vehicleNo)
     }
 
     /*
@@ -127,7 +132,7 @@ class VehicleViewModel @Inject constructor(
         _vehicleList.value = ResponseStatusCallbacks.loading(data = null)
         viewModelScope.launch {
             try {
-                searchVehicleUseCaseLocal(vehicleNo = search).collect { dataset ->
+                searchVehicleUseCaseLocal(vehicleNo = "%$search%").collect { dataset ->
                     if (dataset.isNullOrEmpty())
                         _vehicleList.value = ResponseStatusCallbacks.error(
                             data = null,

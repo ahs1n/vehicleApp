@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.vehicleapp.R
 import androidx.databinding.library.baseAdapters.BR
 import com.example.vehicleapp.databinding.ItemVehicleLayoutBinding
+import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
 
 /**
@@ -15,9 +16,10 @@ import com.example.vehicleapp.model.VehiclesItem
 class VehicleViewHolder(private val bi: ItemVehicleLayoutBinding) :
     RecyclerView.ViewHolder(bi.root) {
 
-    fun bind(item: VehiclesItem) {
+    fun bind(item: VehicleAttendance) {
         bi.apply {
-            bi.setVariable(BR.vehicleItem, item)
+            bi.setVariable(BR.vehicleItem, item.vehicles)
+            bi.setVariable(BR.attendanceItem, item.attendance)
             bi.executePendingBindings()
         }
     }
@@ -33,12 +35,12 @@ class VehicleViewHolder(private val bi: ItemVehicleLayoutBinding) :
     }
 
     class ChildViewDiffUtils(
-        private val oldList: ArrayList<VehiclesItem>,
-        private val newList: ArrayList<VehiclesItem>
+        private val oldList: ArrayList<VehicleAttendance>,
+        private val newList: ArrayList<VehicleAttendance>
     ) :
         DiffUtil.Callback() {
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition].id == newList[newItemPosition].id
+            return oldList[oldItemPosition].vehicles.vehicleNo == newList[newItemPosition].vehicles.vehicleNo
         }
 
         override fun getOldListSize(): Int {

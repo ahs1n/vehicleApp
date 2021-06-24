@@ -3,9 +3,12 @@ package com.example.vehicleapp.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vehicleapp.model.Attendance
+import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.viewholder.VehicleViewHolder
 import kotlinx.android.synthetic.main.item_vehicle_layout.view.*
+import org.apache.commons.lang3.StringUtils
 
 /**
  * @author AliAzazAlam on 5/4/2021.
@@ -13,7 +16,7 @@ import kotlinx.android.synthetic.main.item_vehicle_layout.view.*
 class VehicleListAdapter(private val clickListener: OnItemClickListener) :
     RecyclerView.Adapter<VehicleViewHolder>() {
 
-    var vehicleItems: ArrayList<VehiclesItem> = ArrayList()
+    var vehicleItems: ArrayList<VehicleAttendance> = ArrayList()
         set(value) {
             field = value
             val diffCallback =
@@ -25,7 +28,7 @@ class VehicleListAdapter(private val clickListener: OnItemClickListener) :
             diffResult.dispatchUpdatesTo(this)
         }
 
-    private var filteredVehicleItems: ArrayList<VehiclesItem> = ArrayList()
+    private var filteredVehicleItems: ArrayList<VehicleAttendance> = ArrayList()
         set(value) {
             field = value
             val diffCallback =
@@ -44,15 +47,21 @@ class VehicleListAdapter(private val clickListener: OnItemClickListener) :
 
     override fun onBindViewHolder(holder: VehicleViewHolder, i: Int) {
         val item = filteredVehicleItems[i]
+
+        item.attendance?.let {
+            if (it.meter_in != null && it.meter_out != null)
+                item.attendance = null
+        }
+
         holder.bind(item)
         holder.itemView.timeBtn.setOnClickListener {
-            clickListener.onItemClick(item, i)
+            clickListener.onItemClick(item.vehicles, item.attendance, i)
         }
     }
 
     override fun getItemCount(): Int = filteredVehicleItems.size
 
     interface OnItemClickListener {
-        fun onItemClick(item: VehiclesItem, position: Int)
+        fun onItemClick(item: VehiclesItem, attendance: Attendance?, position: Int)
     }
 }

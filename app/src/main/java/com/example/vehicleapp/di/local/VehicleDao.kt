@@ -29,14 +29,14 @@ interface VehicleDao {
     }
 
     @Query("SELECT * FROM  ${CONSTANTS.VEHICLE_TABLE} WHERE vehicleNo LIKE :vehicleNo ORDER BY id ASC")
-    fun readSpecificVehicle(vehicleNo: String): Flow<List<VehiclesItem>>
+    fun readSpecificVehicle(vehicleNo: String): Flow<List<VehicleAttendance>>
 
     @Query("SELECT * FROM  ${CONSTANTS.VEHICLE_TABLE}")
     fun readAllVehicles(): Flow<List<VehiclesItem>>
 
     @Transaction
     @Query("SELECT * FROM ${CONSTANTS.VEHICLE_TABLE}")
-    fun getVehicleAndAttendance(): List<VehicleAttendance>
+    fun getVehicleAndAttendance(): Flow<List<VehicleAttendance>>
 
     /*
     * Users

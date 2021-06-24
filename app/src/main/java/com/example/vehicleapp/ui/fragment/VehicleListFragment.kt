@@ -1,11 +1,9 @@
 package com.example.vehicleapp.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +16,8 @@ import com.example.vehicleapp.base.repository.ResponseStatus
 import com.example.vehicleapp.base.viewmodel.VehicleViewModel
 import com.example.vehicleapp.databinding.FragmentVehicleListBinding
 import com.example.vehicleapp.di.shared.SharedStorage
+import com.example.vehicleapp.model.Attendance
+import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.ui.login_activity.LoginActivity
@@ -95,7 +95,7 @@ class VehicleListFragment : FragmentBase() {
             when (it.status) {
                 ResponseStatus.SUCCESS -> {
                     it.data?.apply {
-                        adapter.vehicleItems = it.data as ArrayList<VehiclesItem>
+                        adapter.vehicleItems = it.data as ArrayList<VehicleAttendance>
                         bi.multiStateView.viewState = MultiStateView.ViewState.CONTENT
                     }
                 }
@@ -130,7 +130,7 @@ class VehicleListFragment : FragmentBase() {
 
             viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner, {
                 if (it) {
-                    CustomProgressDialog.show(requireContext())
+                    CustomProgressDialog.show(requireContext(), getString(R.string.processing_data))
                 } else {
                     CustomProgressDialog.dismiss()
                 }
@@ -156,7 +156,7 @@ class VehicleListFragment : FragmentBase() {
                 val s = bi.edtSearchPhotos.text.toString()
                 adapter.clearProductItem()
                 bi.populateTxt.text = "Search: ${s.toUpperCase(Locale.ENGLISH)}"
-                viewModel.searchImagesFromRemote(s)
+                viewModel.searchVehicleFromDB(s)
             }
             false
         }
@@ -178,8 +178,13 @@ class VehicleListFragment : FragmentBase() {
     * */
     private fun callingRecyclerView() {
         adapter = VehicleListAdapter(object : VehicleListAdapter.OnItemClickListener {
-            override fun onItemClick(item: VehiclesItem, position: Int) {
-                findNavController().navigate(VehicleListFragmentDirections.actionVehicleListFragmentToVehicleDetailFragment(item,null))
+            override fun onItemClick(item: VehiclesItem, attendance: Attendance?, position: Int) {
+                findNavController().navigate(
+                    VehicleListFragmentDirections.actionVehicleListFragmentToVehicleDetailFragment(
+                        item,
+                        attendance
+                    )
+                )
             }
         })
         adapter.stateRestorationPolicy =
@@ -222,7 +227,7 @@ class VehicleListFragment : FragmentBase() {
             }
             R.id.logout_menu -> {
                 AlertDialogFragment(
-                    title = "Are you sure you want to logout from this app?",
+                    title = getString(R.string.logout_message),
                     callBack = object : CallBack {
                         override fun actionYes() {
                             SharedStorage.setLogOutUser(sharedPrefImpl)

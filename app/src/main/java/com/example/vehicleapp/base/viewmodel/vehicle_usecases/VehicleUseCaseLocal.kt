@@ -8,5 +8,6 @@ import javax.inject.Inject
  */
 class VehicleUseCaseLocal @Inject constructor(private val repository: GeneralDataSource) {
     suspend operator fun invoke(
-    ) = repository.getAllVehiclesFromDB()
+//    ) = repository.getAllVehiclesFromDB()
+    ) = repository.getAllVehiclesAndAttendanceFromDB()
 }

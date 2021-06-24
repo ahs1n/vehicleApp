@@ -13,6 +13,6 @@ data class VehicleAttendance(
         parentColumn = "vehicleNo",
         entityColumn = "vehicleNo"
     )
-    val attendance: Attendance
+    var attendance: Attendance?
 
 )

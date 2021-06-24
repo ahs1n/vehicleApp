@@ -19,4 +19,7 @@
     <string name="search">Search</string>
     <string name="download">Download</string>
     <string name="logout">LogOut</string>
+    <string name="logout_message">Are you sure you want to logout from this app?</string>
+    <string name="processing_data">Processing Data</string>
+    <string name="processing_attendance">Processing Attendance</string>
 </resources>

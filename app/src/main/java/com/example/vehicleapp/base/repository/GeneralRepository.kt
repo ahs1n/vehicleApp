@@ -4,6 +4,7 @@ import com.example.vehicleapp.di.auth.AuthApi
 import com.example.vehicleapp.di.local.VehicleDao
 import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.UsersItem
+import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +37,11 @@ class GeneralRepository @Inject constructor(
         return vehicleDao.readAllVehicles()
     }
 
-    override suspend fun getSearchVehicleFromDB(vehicleNo: String): Flow<List<VehiclesItem>> {
+    override suspend fun getAllVehiclesAndAttendanceFromDB(): Flow<List<VehicleAttendance>> {
+        return vehicleDao.getVehicleAndAttendance()
+    }
+
+    override suspend fun getSearchVehicleFromDB(vehicleNo: String): Flow<List<VehicleAttendance>> {
         return vehicleDao.readSpecificVehicle(vehicleNo)
     }
 
