@@ -37,8 +37,8 @@ class VehicleListAdapter(private val clickListener: OnItemClickListener) :
             diffResult.dispatchUpdatesTo(this)
         }
 
-    fun clearProductItem() {
-        filteredVehicleItems.clear()
+    fun clearVehicleItems() {
+        vehicleItems.clear()
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): VehicleViewHolder {

@@ -12,8 +12,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cp_cardview"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/_130sdp"
+        android:layout_height="@dimen/_130sdp"
         app:cardBackgroundColor="#00000000"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
@@ -26,10 +26,10 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cp_view"
-            android:background="@color/purple_200"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:background="@color/purple_200"
             android:gravity="center">
 
             <ProgressBar
@@ -51,9 +51,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="15dp"
-                android:text=""
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
+                android:textSize="@dimen/_11sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

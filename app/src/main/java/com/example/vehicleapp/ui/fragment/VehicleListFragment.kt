@@ -154,7 +154,7 @@ class VehicleListFragment : FragmentBase() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 bi.edtSearchPhotos.hideKeyboard()
                 val s = bi.edtSearchPhotos.text.toString()
-                adapter.clearProductItem()
+                adapter.clearVehicleItems()
                 bi.populateTxt.text = "Search: ${s.toUpperCase(Locale.ENGLISH)}"
                 viewModel.searchVehicleFromDB(s)
             }
@@ -166,7 +166,7 @@ class VehicleListFragment : FragmentBase() {
         * */
         bi.inputSearchPhotos.setEndIconOnClickListener {
             bi.edtSearchPhotos.setText("")
-            adapter.clearProductItem()
+            adapter.clearVehicleItems()
             bi.populateTxt.text = "Search: Latest"
             viewModel.fetchVehiclesFromLocalDB()
         }
