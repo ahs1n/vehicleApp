@@ -29,5 +29,7 @@ data class Attendance(
     val meter_out: String? = null,
     val remarks: String? = null,
     val appversion: String? = null,
-    val endDate: String? = null
+    val endDate: String? = null,
+    val synced: Int = 0,
+    val synced_date: String? = null
 ) : Parcelable

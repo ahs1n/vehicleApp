@@ -34,7 +34,6 @@ class VehicleDetailFragment : FragmentBase() {
         arguments?.get("attendanceVehicle")?.let { it as Attendance }
     }
     private lateinit var form: Attendance
-    private var startFlag = false
 
     @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +98,7 @@ class VehicleDetailFragment : FragmentBase() {
         * Obtaining ViewModel
         * */
         viewModel = obtainViewModel(
-            activity as MainActivity,
+            this,
             AttendanceViewModel::class.java,
             viewModelFactory
         )
@@ -110,7 +109,7 @@ class VehicleDetailFragment : FragmentBase() {
         viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner, {
             if (it) {
                 CustomProgressDialog.show(
-                    requireContext(),
+                    activity as MainActivity,
                     getString(R.string.processing_attendance)
                 )
             } else {
@@ -122,22 +121,18 @@ class VehicleDetailFragment : FragmentBase() {
         * Observe data inserted and updated
         * */
         viewModel.attendanceForm.observe(viewLifecycleOwner, {
-            if (startFlag) {
-                when (it) {
-                    is ResultCallBack.Error -> {
-                        bi.clAttendenceForm.showSnackBar(
-                            message = it.exception.message.toString(),
-                            action = "Got It!",
-                            actionListener = {}
-                        )
-                    }
-                    is ResultCallBack.Success -> {
-                        "Attendance recorded successfully".toastUtil().show()
-                        findNavController().navigateUp()
-                    }
+            when (it) {
+                is ResultCallBack.Error -> {
+                    bi.clAttendenceForm.showSnackBar(
+                        message = it.exception.message.toString(),
+                        action = "Got It!",
+                        actionListener = {}
+                    )
                 }
-
-                startFlag = false
+                is ResultCallBack.Success -> {
+                    "Attendance recorded successfully".toastUtil().show()
+                    findNavController().navigate(VehicleDetailFragmentDirections.actionVehicleDetailFragmentToVehicleListFragment())
+                }
             }
         })
 
@@ -155,13 +150,11 @@ class VehicleDetailFragment : FragmentBase() {
             return
         }
 
-        startFlag = true
-
         val timeInAttendance = form.copy(
             driverName = bi.updateDriverName.text.toString(),
             meter_in = bi.updateMeterIn.text.toString(),
-            startDate = bi.updateDate.text.toString(),
-            sysDate = SimpleDateFormat("dd-MM-yy HH:mm", Locale.ENGLISH).format(Date().time),
+            startDate = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).format(Date()),
+            sysDate = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH).format(Date().time),
             remarks = bi.updateRemarks.text.toString()
         )
 
@@ -173,12 +166,10 @@ class VehicleDetailFragment : FragmentBase() {
     fun timeOutBtn(view: View) {
         if (!Validator.emptyCheckingContainer(requireContext(), bi.clAttendenceForm)) return
 
-        startFlag = true
-
         val timeInAttendance = attendanceRecord?.copy(
             meter_out = bi.updateMeterOut.text.toString(),
             remarks = bi.updateRemarks.text.toString(),
-            endDate = SimpleDateFormat("dd-MM-yy HH:mm", Locale.ENGLISH).format(Date().time)
+            endDate = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH).format(Date().time)
         )
 
         timeInAttendance?.let {

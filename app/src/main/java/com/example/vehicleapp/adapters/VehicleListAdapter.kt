@@ -9,6 +9,9 @@ import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.viewholder.VehicleViewHolder
 import kotlinx.android.synthetic.main.item_vehicle_layout.view.*
 import org.apache.commons.lang3.StringUtils
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @author AliAzazAlam on 5/4/2021.
@@ -49,7 +52,8 @@ class VehicleListAdapter(private val clickListener: OnItemClickListener) :
         val item = filteredVehicleItems[i]
 
         item.attendance?.let {
-            if (it.meter_in != null && it.meter_out != null)
+            if (it.meter_in != null && it.meter_out != null && it.startDate != SimpleDateFormat("dd-MM-yy", Locale.ENGLISH).format(
+                    Date()))
                 item.attendance = null
         }
 

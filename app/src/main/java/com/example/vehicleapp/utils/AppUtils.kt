@@ -68,10 +68,11 @@ fun <T : AppCompatActivity> AppCompatActivity.gotoActivity(targetActivityClass: 
 }
 
 fun <T : AppCompatActivity> Fragment.gotoActivityWithNoBackUp(targetActivityClass: Class<T>) {
-    val intent = Intent(activity, targetActivityClass)
+    val intent = Intent(requireActivity(), targetActivityClass)
         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    requireActivity().finish()
     startActivity(intent)
 }
 

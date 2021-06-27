@@ -29,7 +29,7 @@ interface VehicleDao {
     }
 
     @Query("SELECT * FROM  ${CONSTANTS.VEHICLE_TABLE} WHERE vehicleNo LIKE :vehicleNo ORDER BY id ASC")
-    fun readSpecificVehicle(vehicleNo: String): Flow<List<VehicleAttendance>>
+    fun readSpecificVehicleAndAttendance(vehicleNo: String): Flow<List<VehicleAttendance>>
 
     @Query("SELECT * FROM  ${CONSTANTS.VEHICLE_TABLE}")
     fun readAllVehicles(): Flow<List<VehiclesItem>>
@@ -55,11 +55,6 @@ interface VehicleDao {
 
     @Query("SELECT full_name,username,id FROM ${CONSTANTS.USER_TABLE} WHERE username = :username and password=:password")
     fun readUserExist(username: String, password: String): UsersItem?
-
-    /*@Query("SELECT * FROM vehicle_driver")
-    fun readAllVehicles(): Flow<List<VehicleAttendance>>*/
-
-//    @Query("SELECT * FROM attendence WHERE vehilceNo = :vehicleNo")
 
     /*
     * Attendance form

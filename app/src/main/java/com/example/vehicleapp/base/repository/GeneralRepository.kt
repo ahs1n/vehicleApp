@@ -42,7 +42,7 @@ class GeneralRepository @Inject constructor(
     }
 
     override suspend fun getSearchVehicleFromDB(vehicleNo: String): Flow<List<VehicleAttendance>> {
-        return vehicleDao.readSpecificVehicle(vehicleNo)
+        return vehicleDao.readSpecificVehicleAndAttendance(vehicleNo)
     }
 
     override suspend fun getLoginInformation(username: String, password: String): UsersItem? =

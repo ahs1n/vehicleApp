@@ -26,6 +26,7 @@ import com.kennyc.view.MultiStateView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -78,7 +79,7 @@ class VehicleListFragment : FragmentBase() {
         * Obtaining ViewModel
         * */
         viewModel = obtainViewModel(
-            activity as MainActivity,
+            this,
             VehicleViewModel::class.java,
             viewModelFactory
         )
@@ -94,8 +95,11 @@ class VehicleListFragment : FragmentBase() {
         viewModel.vehiclesResponse.observe(viewLifecycleOwner, { it ->
             when (it.status) {
                 ResponseStatus.SUCCESS -> {
-                    it.data?.apply {
-                        adapter.vehicleItems = it.data as ArrayList<VehicleAttendance>
+                    it.data?.run {
+                        val recVehicle = it.data as ArrayList<VehicleAttendance>
+                        if (recVehicle.isNotEmpty())
+                            recVehicle.sortByDescending { it.attendance?.let { item -> item.meter_in != null && item.meter_out == null } }
+                        adapter.vehicleItems = recVehicle
                         bi.multiStateView.viewState = MultiStateView.ViewState.CONTENT
                     }
                 }
@@ -148,12 +152,12 @@ class VehicleListFragment : FragmentBase() {
         }
 
         /*
-        * Image search
+        * vehicle search
         * */
-        bi.edtSearchPhotos.setOnEditorActionListener { _, actionId, _ ->
+        bi.edtSearchVehicle.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                bi.edtSearchPhotos.hideKeyboard()
-                val s = bi.edtSearchPhotos.text.toString()
+                bi.edtSearchVehicle.hideKeyboard()
+                val s = bi.edtSearchVehicle.text.toString()
                 adapter.clearVehicleItems()
                 bi.populateTxt.text = "Search: ${s.toUpperCase(Locale.ENGLISH)}"
                 viewModel.searchVehicleFromDB(s)
@@ -162,12 +166,12 @@ class VehicleListFragment : FragmentBase() {
         }
 
         /*
-        * Image search clear
+        * vehicle search clear
         * */
-        bi.inputSearchPhotos.setEndIconOnClickListener {
-            bi.edtSearchPhotos.setText("")
+        bi.inputSearchVehicle.setEndIconOnClickListener {
+            bi.edtSearchVehicle.text = null
             adapter.clearVehicleItems()
-            bi.populateTxt.text = "Search: Latest"
+            bi.populateTxt.text = "Search: All Vehicles"
             viewModel.fetchVehiclesFromLocalDB()
         }
 

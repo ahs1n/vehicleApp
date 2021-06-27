@@ -23,8 +23,14 @@
             app:argType="com.example.vehicleapp.model.VehiclesItem" />
         <argument
             android:name="attendanceVehicle"
+            android:defaultValue="@null"
             app:argType="com.example.vehicleapp.model.Attendance"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_vehicleDetailFragment_to_vehicleListFragment"
+            app:popUpToInclusive="true"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/main_nav_graph"
+            app:destination="@id/vehicleListFragment" />
     </fragment>
 </navigation>
