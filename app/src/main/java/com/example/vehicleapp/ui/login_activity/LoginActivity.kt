@@ -22,10 +22,7 @@ import com.example.vehicleapp.databinding.ActivityLoginBinding
 import com.example.vehicleapp.di.shared.SharedStorage
 import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.ui.login_activity.login_view.LoginUISource
-import com.example.vehicleapp.utils.gotoActivity
-import com.example.vehicleapp.utils.isNetworkConnected
-import com.example.vehicleapp.utils.obtainViewModel
-import com.example.vehicleapp.utils.showSnackBar
+import com.example.vehicleapp.utils.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 
@@ -82,6 +79,14 @@ class LoginActivity : ActivityBase(), LoginUISource {
                 }
             }
         })
+
+        viewModel.apiDownloadingDataProgress.observe(this, {
+            if (it) {
+                CustomProgressDialog.show(this, getString(R.string.downloadin_data))
+            } else {
+                CustomProgressDialog.dismiss()
+            }
+        })
     }
 
     /*
@@ -92,7 +97,7 @@ class LoginActivity : ActivityBase(), LoginUISource {
             Toast.makeText(this, "Network connection not available!", Toast.LENGTH_SHORT).show()
             return
         }
-//        gotoActivity(SyncActivity::class.java)
+        viewModel.downloadingUsers()
     }
 
     /*

@@ -1,9 +1,11 @@
 package com.example.vehicleapp.base.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vehicleapp.base.repository.ResponseStatusCallbacks
+import com.example.vehicleapp.base.repository.ResultCallBack
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.SearchVehicleUseCaseLocal
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseRemote
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseLocal
@@ -22,6 +24,8 @@ class VehicleViewModel @Inject constructor(
     private val vehicleUseCaseLocal: VehicleUseCaseLocal,
     private val searchVehicleUseCaseLocal: SearchVehicleUseCaseLocal
 ) : ViewModel() {
+
+    private val TAG = VehicleViewModel::class.java.simpleName
 
     private val _vehicleList: MutableLiveData<ResponseStatusCallbacks<List<VehicleAttendance>>> =
         MutableLiveData()
@@ -44,12 +48,26 @@ class VehicleViewModel @Inject constructor(
     }
 
     /*
-    * downloading vehicles data
+    * downloading vehicles data and register exception for exception handelling
     * */
     fun downloadingVehicles() {
         apiDownloadingDataProgress(true)
         viewModelScope.launch {
-            vehicleUseCaseRemote.invoke()
+            vehicleUseCaseRemote.invoke().let {data ->
+                when(data){
+                    is ResultCallBack.CallException -> {
+                        apiDownloadingDataProgress(false)
+                        Log.e(TAG, data.exception.message.toString() )
+                    }
+                    is ResultCallBack.Error -> {
+                        apiDownloadingDataProgress(false)
+                        Log.e(TAG, data.error )
+                    }
+                    is ResultCallBack.Success -> {
+                        apiDownloadingDataProgress(false)
+                    }
+                }
+            }
         }
     }
 
@@ -65,9 +83,6 @@ class VehicleViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 vehicleUseCaseLocal().collect { dataset ->
-
-                    apiDownloadingDataProgress(false)
-
                     if (dataset.isNullOrEmpty())
                         _vehicleList.value = ResponseStatusCallbacks.error(
                             data = null,

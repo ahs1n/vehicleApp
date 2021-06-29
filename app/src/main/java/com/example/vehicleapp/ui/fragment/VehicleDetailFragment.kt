@@ -56,8 +56,7 @@ class VehicleDetailFragment : FragmentBase() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.findItem(R.id.search_menu).isVisible = false
-        menu.findItem(R.id.download_menu).isVisible = false
-        menu.findItem(R.id.logout_menu).isVisible = false
+        menu.findItem(R.id.options_group).isVisible = false
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -122,7 +121,7 @@ class VehicleDetailFragment : FragmentBase() {
         * */
         viewModel.attendanceForm.observe(viewLifecycleOwner, {
             when (it) {
-                is ResultCallBack.Error -> {
+                is ResultCallBack.CallException -> {
                     bi.clAttendenceForm.showSnackBar(
                         message = it.exception.message.toString(),
                         action = "Got It!",

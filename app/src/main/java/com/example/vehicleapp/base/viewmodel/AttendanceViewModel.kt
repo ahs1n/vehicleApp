@@ -37,7 +37,7 @@ class AttendanceViewModel @Inject constructor(
             val count = insertAttendanceFormUseCase.invoke(attendance).toInt()
             if (count > 0) _attendanceForm.value = ResultCallBack.Success(true)
             else _attendanceForm.value =
-                ResultCallBack.Error(Exception("Failed to insert record in database!"))
+                ResultCallBack.CallException(Exception("Failed to insert record in database!"))
             apiDownloadingDataProgress(false)
         }
     }
@@ -49,7 +49,7 @@ class AttendanceViewModel @Inject constructor(
             val count = updateAttendanceFormUseCase.invoke(attendance)
             if (count == 1) _attendanceForm.value = ResultCallBack.Success(true)
             else _attendanceForm.value =
-                ResultCallBack.Error(Exception("Failed to insert record in database!"))
+                ResultCallBack.CallException(Exception("Failed to insert record in database!"))
         }
     }
 

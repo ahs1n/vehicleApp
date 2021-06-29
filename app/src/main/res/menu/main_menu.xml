@@ -10,20 +10,33 @@
         android:visible="false"
         app:showAsAction="always"
         tools:visible="true" />
+
     <item
-        android:id="@+id/download_menu"
-        android:backgroundTint="@color/white"
-        android:icon="@drawable/ic_download"
-        android:title="@string/download"
+        android:id="@+id/options_group"
+        android:icon="@drawable/ic_menu"
+        android:title="@string/options"
         android:visible="false"
-        app:showAsAction="always"
-        tools:visible="true" />
-    <item
-        android:id="@+id/logout_menu"
-        android:backgroundTint="@color/white"
-        android:icon="@drawable/ic_logout"
-        android:title="@string/logout"
-        android:visible="false"
-        app:showAsAction="always"
-        tools:visible="true" />
+        app:showAsAction="ifRoom"
+        tools:visible="true">
+        <menu>
+            <item
+                android:id="@+id/download_menu"
+                android:icon="@drawable/ic_download"
+                android:title="@string/download"
+                tools:visible="true" />
+            <item
+                android:id="@+id/upload_menu"
+                android:icon="@drawable/ic_upload"
+                android:title="@string/upload"
+                tools:visible="true" />
+            <item
+                android:id="@+id/logout_menu"
+                android:icon="@drawable/ic_logout"
+                android:title="@string/logout"
+                tools:visible="true" />
+
+        </menu>
+
+    </item>
+
 </menu>

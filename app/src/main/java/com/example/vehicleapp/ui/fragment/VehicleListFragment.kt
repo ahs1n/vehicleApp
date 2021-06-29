@@ -206,8 +206,7 @@ class VehicleListFragment : FragmentBase() {
     * */
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.findItem(R.id.search_menu).isVisible = true
-        menu.findItem(R.id.download_menu).isVisible = true
-        menu.findItem(R.id.logout_menu).isVisible = true
+        menu.findItem(R.id.options_group).isVisible = true
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -245,6 +244,10 @@ class VehicleListFragment : FragmentBase() {
                 ).show(
                     this@VehicleListFragment.parentFragmentManager, AlertDialogFragment.TAG
                 )
+                true
+            }
+            R.id.upload_menu -> {
+                "Under constrction".toastUtil().show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

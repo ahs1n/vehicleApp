@@ -23,4 +23,7 @@
     <string name="processing_data">Processing Data</string>
     <string name="processing_attendance">Processing Attendance</string>
     <string name="done">Done</string>
+    <string name="downloadin_data">Downloading Data..</string>
+    <string name="options">Options</string>
+    <string name="upload">Upload</string>
 </resources>

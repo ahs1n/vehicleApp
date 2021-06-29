@@ -1,9 +1,9 @@
 package com.example.vehicleapp.di.modules
 
 import com.example.vehicleapp.di.auth.AuthApi
+import com.example.vehicleapp.di.auth.remote.ApiResponseCallAdapterFactory
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -31,7 +31,6 @@ class NetworkApiModule {
     @Provides
     fun buildRetrofitClient(
         okHttpClient: OkHttpClient,
-        coroutineCallAdapterFactory: CoroutineCallAdapterFactory,
         gsonConverterFactory: GsonConverterFactory,
         scalarsConverterFactory: ScalarsConverterFactory,
     ): Retrofit {
@@ -40,7 +39,7 @@ class NetworkApiModule {
             .client(okHttpClient)
             .addConverterFactory(scalarsConverterFactory)
             .addConverterFactory(gsonConverterFactory)
-            .addCallAdapterFactory(coroutineCallAdapterFactory)
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory())
             .build()
     }
 
@@ -78,12 +77,6 @@ class NetworkApiModule {
         return GsonBuilder()
             .setLenient()
             .create();
-    }
-
-    @Provides
-    @Singleton
-    fun getCoroutineCallAdapter(): CoroutineCallAdapterFactory {
-        return CoroutineCallAdapterFactory.invoke()
     }
 
 }

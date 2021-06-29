@@ -1,14 +1,23 @@
 package com.example.vehicleapp.base.repository
 
+import androidx.annotation.WorkerThread
 import com.example.vehicleapp.di.auth.AuthApi
+import com.example.vehicleapp.di.auth.remote.message
+import com.example.vehicleapp.di.auth.remote.onErrorSuspend
+import com.example.vehicleapp.di.auth.remote.onExceptionSuspend
+import com.example.vehicleapp.di.auth.remote.onSuccessSuspend
 import com.example.vehicleapp.di.local.VehicleDao
 import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.UsersItem
 import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
+import com.example.vehicleapp.model.utils.Users
+import com.example.vehicleapp.model.utils.Vehicles
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.apache.commons.lang3.StringUtils
 import javax.inject.Inject
 
 /**
@@ -19,18 +28,48 @@ class GeneralRepository @Inject constructor(
     private val vehicleDao: VehicleDao
 ) : GeneralDataSource {
 
-    override suspend fun getAllUsers(
-    ) = withContext(Dispatchers.IO) {
-        vehicleDao.updateUsersData(
-            apiService.getUserServerData()
-        )
+    @WorkerThread
+    override suspend fun getAllUsers(): ResultCallBack<Users> {
+        var result: ResultCallBack<Users>? = null
+        apiService.getUserServerData().apply {
+            this.onSuccessSuspend {
+                result = data?.let {
+                    withContext(Dispatchers.IO) {
+                        vehicleDao.updateUsersData(
+                            it
+                        )
+                        ResultCallBack.Success(it)
+                    }
+                } ?: ResultCallBack.Error("Empty records received from server")
+            }.onErrorSuspend {
+                result = ResultCallBack.Error(message())
+            }.onExceptionSuspend {
+                result = ResultCallBack.CallException(exception = this.exception as Exception)
+            }
+        }
+        return result!!
     }
 
-    override suspend fun getAllVehiclesFromRemote(
-    ) = withContext(Dispatchers.IO) {
-        vehicleDao.updateVehiclesData(
-            apiService.getVehicleServerData()
-        )
+    @WorkerThread
+    override suspend fun getAllVehiclesFromRemote(): ResultCallBack<Vehicles> {
+        var result: ResultCallBack<Vehicles>? = null
+        apiService.getVehicleServerData().apply {
+            this.onSuccessSuspend {
+                result = data?.let {
+                    withContext(Dispatchers.IO) {
+                        vehicleDao.updateVehiclesData(
+                            it
+                        )
+                        ResultCallBack.Success(it)
+                    }
+                } ?: ResultCallBack.Error("Empty records received from server")
+            }.onErrorSuspend {
+                result = ResultCallBack.Error(message())
+            }.onExceptionSuspend {
+                result = ResultCallBack.CallException(exception = this.exception as Exception)
+            }
+        }
+        return result!!
     }
 
     override suspend fun getAllVehiclesFromDB(): Flow<List<VehiclesItem>> {

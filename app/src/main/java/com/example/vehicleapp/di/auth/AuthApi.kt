@@ -1,5 +1,6 @@
 package com.example.vehicleapp.di.auth
 
+import com.example.vehicleapp.di.auth.remote.ApiResponse
 import com.example.vehicleapp.model.utils.Users
 import com.example.vehicleapp.model.utils.Vehicles
 import com.example.vehicleapp.utils.CONSTANTS
@@ -11,10 +12,10 @@ import retrofit2.http.GET
 interface AuthApi {
 
     @GET(ApiRoutes.GET_DATA + CONSTANTS.VEHICLE_TABLE)
-    suspend fun getVehicleServerData(): Vehicles
+    suspend fun getVehicleServerData(): ApiResponse<Vehicles>
 
     @GET(ApiRoutes.GET_DATA + CONSTANTS.USER_TABLE)
-    suspend fun getUserServerData(): Users
+    suspend fun getUserServerData(): ApiResponse<Users>
 
 
 }

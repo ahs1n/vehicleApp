@@ -1,7 +1,7 @@
 package com.example.vehicleapp.di.modules
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.example.vehicleapp.di.auth.remote.ApiResponseCallAdapterFactory
 import okio.buffer
 import okio.source
 import org.hamcrest.CoreMatchers
@@ -61,7 +61,7 @@ abstract class NetworkApiModuleTest<T> {
         return Retrofit.Builder()
             .baseUrl(mockWebServer.url("/"))
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory())
             .build()
             .create(clazz)
     }

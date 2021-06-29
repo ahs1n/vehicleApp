@@ -1,6 +1,8 @@
 package com.example.vehicleapp.base.repository
 
 import com.example.vehicleapp.model.*
+import com.example.vehicleapp.model.utils.Users
+import com.example.vehicleapp.model.utils.Vehicles
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -11,7 +13,7 @@ interface GeneralDataSource {
     /*
     * Get all users from server
     * */
-    suspend fun getAllUsers()
+    suspend fun getAllUsers():ResultCallBack<Users>
     /*
     * Get all users from server End
     * */
@@ -20,7 +22,7 @@ interface GeneralDataSource {
     /*
     * Get all vehicles
     * */
-    suspend fun getAllVehiclesFromRemote()
+    suspend fun getAllVehiclesFromRemote():ResultCallBack<Vehicles>
 
     suspend fun getAllVehiclesFromDB(): Flow<List<VehiclesItem>>
 
