@@ -69,13 +69,6 @@ class VehicleDetailFragment : FragmentBase() {
         * */
         bi = FragmentVehicleDetailBinding.inflate(inflater, container, false)
         bi.callback = this
-        /*activity?.let {
-            bi.updateDate.apply {
-                manager = it.supportFragmentManager
-                maxDate = bi.updateDate.text.toString().getCalendarDate().addDays(0)
-                minDate = bi.updateDate.text.toString().getCalendarDate().addDays(-14)
-            }
-        }*/
 
         /*
         * Passing data to view

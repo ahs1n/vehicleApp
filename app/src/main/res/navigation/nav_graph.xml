@@ -27,10 +27,5 @@
             android:defaultValue="@null"
             app:argType="com.example.vehicleapp.model.Attendance"
             app:nullable="true" />
-        <!--<action
-            android:id="@+id/action_vehicleDetailFragment_to_vehicleListFragment"
-            app:destination="@id/vehicleListFragment"
-            app:popUpTo="@+id/vehicle_list"
-            app:popUpToInclusive="true" />-->
     </fragment>
 </navigation>
