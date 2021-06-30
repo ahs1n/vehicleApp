@@ -12,7 +12,8 @@
         tools:layout="@layout/fragment_vehicle_list">
         <action
             android:id="@+id/action_vehicleListFragment_to_vehicleDetailFragment"
-            app:destination="@id/vehicleDetailFragment" />
+            app:destination="@id/vehicleDetailFragment"
+            app:launchSingleTop="true" />
     </fragment>
     <fragment
         android:id="@+id/vehicleDetailFragment"
@@ -26,11 +27,10 @@
             android:defaultValue="@null"
             app:argType="com.example.vehicleapp.model.Attendance"
             app:nullable="true" />
-        <action
+        <!--<action
             android:id="@+id/action_vehicleDetailFragment_to_vehicleListFragment"
-            app:popUpToInclusive="true"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/main_nav_graph"
-            app:destination="@id/vehicleListFragment" />
+            app:destination="@id/vehicleListFragment"
+            app:popUpTo="@+id/vehicle_list"
+            app:popUpToInclusive="true" />-->
     </fragment>
 </navigation>

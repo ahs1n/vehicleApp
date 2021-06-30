@@ -130,7 +130,7 @@ class VehicleDetailFragment : FragmentBase() {
                 }
                 is ResultCallBack.Success -> {
                     "Attendance recorded successfully".toastUtil().show()
-                    findNavController().navigate(VehicleDetailFragmentDirections.actionVehicleDetailFragmentToVehicleListFragment())
+                    findNavController().popBackStack()
                 }
             }
         })

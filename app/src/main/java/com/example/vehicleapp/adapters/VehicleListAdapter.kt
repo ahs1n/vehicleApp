@@ -52,7 +52,7 @@ class VehicleListAdapter(private val clickListener: OnItemClickListener) :
         val item = filteredVehicleItems[i]
 
         item.attendance?.let {
-            if (it.meter_in != null && it.meter_out != null && it.startDate != SimpleDateFormat("dd-MM-yy", Locale.ENGLISH).format(
+            if (it.meter_in != null && it.meter_out != null && it.startDate != SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).format(
                     Date()))
                 item.attendance = null
         }
