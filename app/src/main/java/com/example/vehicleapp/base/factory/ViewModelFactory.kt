@@ -32,6 +32,8 @@ class ViewModelFactory @Inject constructor(private val repository: GeneralReposi
                 VehicleUseCaseRemote(repository),
                 VehicleUseCaseLocal(repository),
                 SearchVehicleUseCaseLocal(repository),
+                GetAllAttendanceUseCaseLocal(repository),
+                UploadAttendanceUseCaseRemote(repository)
             ) as T
             modelClass.isAssignableFrom(AttendanceViewModel::class.java) -> AttendanceViewModel(
                 InsertAttendanceFormUseCase(repository),

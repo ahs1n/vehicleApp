@@ -11,6 +11,7 @@ import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.UsersItem
 import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
+import com.example.vehicleapp.model.response.ServerUploadReturn
 import com.example.vehicleapp.model.utils.Users
 import com.example.vehicleapp.model.utils.Vehicles
 import kotlinx.coroutines.Dispatchers
@@ -98,4 +99,23 @@ class GeneralRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             vehicleDao.updateAttendanceForm(attendance)
         }
+
+    override suspend fun getAllAttendanceFormFromLocalDB(): List<Attendance> =
+        withContext(Dispatchers.IO) {
+            vehicleDao.getAllNoneSyncedAttendanceForm()
+        }
+
+    override suspend fun uploadDataToRemoteServer(attendanceLst: List<Attendance>): ResultCallBack<ServerUploadReturn> {
+        var result: ResultCallBack<ServerUploadReturn>? = null
+        apiService.uploadAttendanceDataToServer(attendance = attendanceLst).apply {
+            this.onSuccessSuspend {
+                result = data?.let { ResultCallBack.Success(it) }
+            }.onErrorSuspend {
+                result = ResultCallBack.Error(message())
+            }.onExceptionSuspend {
+                result = ResultCallBack.CallException(exception = this.exception as Exception)
+            }
+        }
+        return result!!
+    }
 }

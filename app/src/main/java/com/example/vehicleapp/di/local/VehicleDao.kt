@@ -65,4 +65,7 @@ interface VehicleDao {
     @Update(onConflict = OnConflictStrategy.IGNORE)
     fun updateAttendanceForm(attendance: Attendance): Int
 
+    @Query("SELECT * FROM ${CONSTANTS.ATTENDANCE_TABLE} WHERE synced = 0 AND meter_out != ''")
+    fun getAllNoneSyncedAttendanceForm(): List<Attendance>
+
 }

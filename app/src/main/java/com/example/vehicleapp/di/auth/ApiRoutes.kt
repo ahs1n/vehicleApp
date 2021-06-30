@@ -7,4 +7,5 @@ import com.example.vehicleapp.utils.CONSTANTS
  */
 object ApiRoutes {
     const val GET_DATA = "api/?table="
+    const val UPLOAD_DATA = "apipost"
 }

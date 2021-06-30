@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.lifecycleScope
@@ -140,6 +141,10 @@ class VehicleListFragment : FragmentBase() {
                 }
             })
 
+            viewModel.responseUpload.observe(viewLifecycleOwner, {
+                it.toastUtil().show()
+            })
+
         })
 
         /*
@@ -247,7 +252,7 @@ class VehicleListFragment : FragmentBase() {
                 true
             }
             R.id.upload_menu -> {
-                "Under constrction".toastUtil().show()
+                viewModel.uploadDataToServer()
                 true
             }
             else -> super.onOptionsItemSelected(item)

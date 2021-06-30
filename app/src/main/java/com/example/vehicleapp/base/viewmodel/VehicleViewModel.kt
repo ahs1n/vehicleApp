@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vehicleapp.base.repository.ResponseStatusCallbacks
 import com.example.vehicleapp.base.repository.ResultCallBack
-import com.example.vehicleapp.base.viewmodel.vehicle_usecases.SearchVehicleUseCaseLocal
-import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseRemote
-import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseLocal
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.*
 import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
 import kotlinx.coroutines.flow.collect
@@ -22,7 +20,9 @@ import javax.inject.Inject
 class VehicleViewModel @Inject constructor(
     private val vehicleUseCaseRemote: VehicleUseCaseRemote,
     private val vehicleUseCaseLocal: VehicleUseCaseLocal,
-    private val searchVehicleUseCaseLocal: SearchVehicleUseCaseLocal
+    private val searchVehicleUseCaseLocal: SearchVehicleUseCaseLocal,
+    private val getAllAttendanceUseCaseLocal: GetAllAttendanceUseCaseLocal,
+    private val uploadAttendanceUseCaseRemote: UploadAttendanceUseCaseRemote
 ) : ViewModel() {
 
     private val TAG = VehicleViewModel::class.java.simpleName
@@ -41,6 +41,8 @@ class VehicleViewModel @Inject constructor(
 
     val apiDownloadingDataProgress = MutableLiveData<Boolean>().apply { value = false }
 
+    val responseUpload = MutableLiveData<String>().apply { value = StringUtils.EMPTY }
+
     private var searchVehicle = StringUtils.EMPTY
 
     init {
@@ -53,15 +55,15 @@ class VehicleViewModel @Inject constructor(
     fun downloadingVehicles() {
         apiDownloadingDataProgress(true)
         viewModelScope.launch {
-            vehicleUseCaseRemote.invoke().let {data ->
-                when(data){
+            vehicleUseCaseRemote.invoke().let { data ->
+                when (data) {
                     is ResultCallBack.CallException -> {
                         apiDownloadingDataProgress(false)
-                        Log.e(TAG, data.exception.message.toString() )
+                        Log.e(TAG, data.exception.message.toString())
                     }
                     is ResultCallBack.Error -> {
                         apiDownloadingDataProgress(false)
-                        Log.e(TAG, data.error )
+                        Log.e(TAG, data.error)
                     }
                     is ResultCallBack.Success -> {
                         apiDownloadingDataProgress(false)
@@ -166,4 +168,43 @@ class VehicleViewModel @Inject constructor(
         }
     }
 
+    /*
+    * Get all attendance from DB and upload to server
+    * */
+    fun uploadDataToServer() {
+        apiDownloadingDataProgress(true)
+        viewModelScope.launch {
+
+            getAllAttendanceUseCaseLocal.invoke().let {
+                if (it.isNotEmpty()) {
+                    uploadAttendanceUseCaseRemote.invoke(
+                        it
+                    ).let { data ->
+                        when (data) {
+                            is ResultCallBack.CallException -> {
+                                apiDownloadingDataProgress(false)
+                                Log.e(TAG, data.exception.message.toString())
+                                responseUpload.value = data.exception.message.toString()
+                            }
+                            is ResultCallBack.Error -> {
+                                apiDownloadingDataProgress(false)
+                                Log.e(TAG, data.error)
+                                responseUpload.value = data.error
+                            }
+                            is ResultCallBack.Success -> {
+                                apiDownloadingDataProgress(false)
+                                responseUpload.value =
+                                    "Uploaded records result: ${data.data.message}"
+                            }
+                        }
+                    }
+                } else {
+                    apiDownloadingDataProgress(false)
+                    responseUpload.value = "No new records to upload to the server"
+                }
+            }
+
+
+        }
+    }
 }
