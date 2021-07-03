@@ -109,7 +109,14 @@ class GeneralRepository @Inject constructor(
         var result: ResultCallBack<ServerUploadReturn>? = null
         apiService.uploadAttendanceDataToServer(attendance = attendanceLst).apply {
             this.onSuccessSuspend {
-                result = data?.let { ResultCallBack.Success(it) }
+                result = data?.let {
+                    withContext(Dispatchers.IO){
+                        vehicleDao.updateSyncedStatus(
+                            IntArray(it.uids.size) {item-> it.uids[item] }
+                        )
+                        ResultCallBack.Success(it)
+                    }
+                }
             }.onErrorSuspend {
                 result = ResultCallBack.Error(message())
             }.onExceptionSuspend {

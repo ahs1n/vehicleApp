@@ -68,4 +68,7 @@ interface VehicleDao {
     @Query("SELECT * FROM ${CONSTANTS.ATTENDANCE_TABLE} WHERE synced = 0 AND meter_out != ''")
     fun getAllNoneSyncedAttendanceForm(): List<Attendance>
 
+    @Query("UPDATE ${CONSTANTS.ATTENDANCE_TABLE} SET synced = 1 WHERE uid IN (:uids)")
+    fun updateSyncedStatus(uids: IntArray): Int
+
 }

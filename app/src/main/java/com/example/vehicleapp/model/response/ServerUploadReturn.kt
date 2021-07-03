@@ -13,4 +13,7 @@ data class ServerUploadReturn(
     @SerializedName("message")
     @Expose val message: String,
 
+    @SerializedName("uids")
+    @Expose val uids: List<Int>,
+
     )

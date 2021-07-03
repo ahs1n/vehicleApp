@@ -10,6 +10,7 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.util.StringUtil
 import com.example.vehicleapp.R
 import com.example.vehicleapp.adapters.VehicleListAdapter
 import com.example.vehicleapp.base.FragmentBase
@@ -27,6 +28,7 @@ import com.kennyc.view.MultiStateView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.StringUtils
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -142,7 +144,10 @@ class VehicleListFragment : FragmentBase() {
             })
 
             viewModel.responseUpload.observe(viewLifecycleOwner, {
-                it.toastUtil().show()
+                if (it != StringUtils.EMPTY) {
+                    it.toastUtil().show()
+                    viewModel.responseUpload.value = StringUtils.EMPTY
+                }
             })
 
         })
