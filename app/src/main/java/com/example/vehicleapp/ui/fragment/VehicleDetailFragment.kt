@@ -165,7 +165,9 @@ class VehicleDetailFragment : FragmentBase() {
         if (!Validator.emptyCheckingContainer(requireContext(), bi.clAttendenceForm)) return
 
         if (Integer.parseInt(bi.updateMeterOut.text.toString()) < Integer.parseInt(bi.updateMeterIn.text.toString())) {
-            "MeterOut cannot be less than MeterIn".toastUtil().show()
+//            "MeterOut Reading should be greater than or equal to MeterIn Reading".toastUtil().show()
+            bi.updateMeterOut.error =
+                "MeterOut Reading should be greater than or equal to MeterIn Reading"
             return
         }
 
