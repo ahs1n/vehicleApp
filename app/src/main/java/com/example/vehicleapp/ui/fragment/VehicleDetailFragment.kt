@@ -3,7 +3,10 @@ package com.example.vehicleapp.ui.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.provider.Settings
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.library.baseAdapters.BR
 import androidx.navigation.fragment.findNavController
 import com.example.vehicleapp.R
@@ -15,7 +18,10 @@ import com.example.vehicleapp.di.shared.SharedStorage
 import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.ui.MainActivity
-import com.example.vehicleapp.utils.*
+import com.example.vehicleapp.utils.CustomProgressDialog
+import com.example.vehicleapp.utils.obtainViewModel
+import com.example.vehicleapp.utils.showSnackBar
+import com.example.vehicleapp.utils.toastUtil
 import com.validatorcrawler.aliazaz.Validator
 import java.text.SimpleDateFormat
 import java.util.*
@@ -157,6 +163,13 @@ class VehicleDetailFragment : FragmentBase() {
 
     fun timeOutBtn(view: View) {
         if (!Validator.emptyCheckingContainer(requireContext(), bi.clAttendenceForm)) return
+
+        if (Integer.parseInt(bi.updateMeterOut.text.toString()) < Integer.parseInt(bi.updateMeterIn.text.toString())) {
+//            "MeterOut Reading should be greater than or equal to MeterIn Reading".toastUtil().show()
+            bi.updateMeterOut.error =
+                "MeterOut Reading should be greater than or equal to MeterIn Reading"
+            return
+        }
 
         val timeInAttendance = attendanceRecord?.copy(
             meter_out = bi.updateMeterOut.text.toString(),

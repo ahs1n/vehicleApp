@@ -35,7 +35,7 @@ android {
     productFlavors{
         dev {
             dimension "doc"
-            buildConfigField "String", "FLAVOR_URL", "\"http://f38158/vehicle_portal/vd/\""
+            buildConfigField "String", "FLAVOR_URL", "\"http://f38158/fr/vd/\""
         }
         production {
             dimension "doc"
