@@ -3,17 +3,17 @@ package com.example.vehicleapp.ui.login_activity
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
-import com.nabinbhandari.android.permissions.PermissionHandler
-import com.nabinbhandari.android.permissions.Permissions
 import com.example.vehicleapp.R
 import com.example.vehicleapp.base.ActivityBase
 import com.example.vehicleapp.base.repository.ResponseStatus.*
@@ -22,17 +22,22 @@ import com.example.vehicleapp.databinding.ActivityLoginBinding
 import com.example.vehicleapp.di.shared.SharedStorage
 import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.ui.login_activity.login_view.LoginUISource
-import com.example.vehicleapp.utils.*
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
+import com.example.vehicleapp.utils.CustomProgressDialog
+import com.example.vehicleapp.utils.gotoActivity
+import com.example.vehicleapp.utils.isNetworkConnected
+import com.example.vehicleapp.utils.obtainViewModel
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class LoginActivity : ActivityBase(), LoginUISource {
 
     lateinit var bi: ActivityLoginBinding
     lateinit var viewModel: LoginViewModel
-    var permissionFlag = false
+    var permissionFlag = true
     var approval = false
+    var requestCode = 101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -226,14 +231,49 @@ class LoginActivity : ActivityBase(), LoginUISource {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
-        val options: Permissions.Options = Permissions.Options()
-            .setRationaleDialogTitle("Permissions Required")
-            .setSettingsDialogTitle("Warning")
-        Permissions.check(this, permissions, null, options, object : PermissionHandler() {
-            override fun onGranted() {
-                permissionFlag = true
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                requestCode
+            )
+        } else if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                requestCode
+            )
+        }
+        /* val options: Permissions.Options = Permissions.Options()
+             .setRationaleDialogTitle("Permissions Required")
+             .setSettingsDialogTitle("Warning")
+         Permissions.check(this, permissions, null, options, object : PermissionHandler() {
+             override fun onGranted() {
+                 permissionFlag = true
+             }
+         })*/
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == requestCode) {
+            // Checking whether user granted the permission or not.
+            if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                permissionFlag = false
             }
-        })
+        }
     }
 
 }

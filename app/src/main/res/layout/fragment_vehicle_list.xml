@@ -51,7 +51,7 @@
                     android:gravity="center_vertical"
                     android:hint="@string/search_photos"
                     android:imeOptions="actionSearch"
-                    android:inputType="textCapCharacters"
+                    android:inputType="number"
                     android:lines="1"
                     android:maxLength="80"
                     android:padding="10dp" />

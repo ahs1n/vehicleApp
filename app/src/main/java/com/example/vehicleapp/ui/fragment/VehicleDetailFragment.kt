@@ -83,7 +83,7 @@ class VehicleDetailFragment : FragmentBase() {
 
         //Set vehicle no as title
         (activity as MainActivity).supportActionBar?.title =
-            "${vehicleRecord.model} ${vehicleRecord.vehicleNo.toUpperCase(Locale.ENGLISH)}"
+            "${vehicleRecord.model} ${vehicleRecord.vehicleNo.uppercase(Locale.ENGLISH)}"
 
 
         return bi.root
@@ -131,6 +131,7 @@ class VehicleDetailFragment : FragmentBase() {
                     "Attendance recorded successfully".toastUtil().show()
                     findNavController().popBackStack()
                 }
+                is ResultCallBack.Error -> TODO()
             }
         })
 

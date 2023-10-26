@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -82,7 +81,7 @@
                         android:drawablePadding="8dp"
                         android:elevation="1dp"
                         android:gravity="center_vertical"
-                        android:hint="Username"
+                        android:hint="@string/username"
                         android:imeOptions="actionUnspecified"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
@@ -111,7 +110,7 @@
                             android:background="@color/white"
                             android:drawablePadding="8dp"
                             android:elevation="1dp"
-                            android:hint="Password"
+                            android:hint="@string/password"
                             android:imeActionLabel="Password"
                             android:imeOptions="actionUnspecified"
                             android:inputType="textPassword"
@@ -157,7 +156,7 @@
                 android:background="@color/teal_700"
                 android:elevation="1dp"
                 android:onClick="@{callback::onLoginClick}"
-                android:text="Sign in"
+                android:text="@string/sign_in"
                 android:textColor="@color/white"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -176,7 +175,7 @@
                 android:onClick="@{callback::onSyncDataClick}"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:text="Do you want to download data?"
+                android:text="@string/do_you_want_to_download_data"
                 android:textAllCaps="false"
                 android:textColor="@color/teal_700"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -191,7 +190,7 @@
                 android:shadowDx="1"
                 android:shadowDy="1"
                 android:shadowRadius="1"
-                android:text="\u00A9\2021 DMU-AKU"
+                android:text="\u00A9\2023 DMU-AKU"
                 android:textColor="#989898"
                 android:textSize="@dimen/_12sdp"
                 app:layout_constraintBottom_toTopOf="@+id/txtinstalldate" />
