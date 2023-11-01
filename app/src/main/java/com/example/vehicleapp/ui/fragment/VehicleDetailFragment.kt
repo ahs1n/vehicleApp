@@ -2,13 +2,13 @@ package com.example.vehicleapp.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.library.baseAdapters.BR
 import androidx.navigation.fragment.findNavController
+import com.example.vehicleapp.MainApp
 import com.example.vehicleapp.R
 import com.example.vehicleapp.base.FragmentBase
 import com.example.vehicleapp.base.repository.ResultCallBack
@@ -18,6 +18,7 @@ import com.example.vehicleapp.di.shared.SharedStorage
 import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.ui.MainActivity
+import com.example.vehicleapp.ui.login_activity.LoginActivity
 import com.example.vehicleapp.utils.CustomProgressDialog
 import com.example.vehicleapp.utils.obtainViewModel
 import com.example.vehicleapp.utils.showSnackBar
@@ -50,11 +51,15 @@ class VehicleDetailFragment : FragmentBase() {
         (attendanceRecord == null).let {
             form = Attendance(
                 vehicleNo = vehicleRecord.vehicleNo,
-                deviceID = Settings.Secure.getString(
+
+                /*deviceID = Settings.Secure.getString(
                     activity?.contentResolver,
                     Settings.Secure.ANDROID_ID
-                ),
-                user = SharedStorage.getLogInUserName(sharedPrefImpl)
+                ),*/
+                deviceID = LoginActivity.deviceId,
+
+                user = SharedStorage.getLogInUserName(sharedPrefImpl),
+                _uid = MainApp.generateUid()
             )
         }
 

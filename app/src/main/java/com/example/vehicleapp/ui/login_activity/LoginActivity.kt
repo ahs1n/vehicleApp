@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import com.example.vehicleapp.MainApp
 import com.example.vehicleapp.R
 import com.example.vehicleapp.base.ActivityBase
 import com.example.vehicleapp.base.repository.ResponseStatus.*
@@ -273,6 +275,15 @@ class LoginActivity : ActivityBase(), LoginUISource {
             if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 permissionFlag = false
             }
+        }
+    }
+
+    companion object{
+        val deviceId: String = try {
+            Settings.Secure.getString(MainApp.applicationContext().contentResolver, Settings.Secure.ANDROID_ID)
+        } catch (e: Exception) {
+            // Handle the exception, log it, or use a default value
+            "UnknownDeviceID"
         }
     }
 

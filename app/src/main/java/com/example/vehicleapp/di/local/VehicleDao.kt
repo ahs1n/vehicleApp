@@ -2,11 +2,11 @@ package com.example.vehicleapp.di.local
 
 import androidx.room.*
 import com.example.vehicleapp.model.Attendance
-import com.example.vehicleapp.model.utils.Users
 import com.example.vehicleapp.model.UsersItem
 import com.example.vehicleapp.model.VehicleAttendance
-import com.example.vehicleapp.model.utils.Vehicles
 import com.example.vehicleapp.model.VehiclesItem
+import com.example.vehicleapp.model.utils.Users
+import com.example.vehicleapp.model.utils.Vehicles
 import com.example.vehicleapp.utils.CONSTANTS
 import kotlinx.coroutines.flow.Flow
 
@@ -68,7 +68,7 @@ interface VehicleDao {
     @Query("SELECT * FROM ${CONSTANTS.ATTENDANCE_TABLE} WHERE synced = 0 AND meter_out != ''")
     fun getAllNoneSyncedAttendanceForm(): List<Attendance>
 
-    @Query("UPDATE ${CONSTANTS.ATTENDANCE_TABLE} SET synced = 1 WHERE uid IN (:uids)")
+    @Query("UPDATE ${CONSTANTS.ATTENDANCE_TABLE} SET synced = 1 WHERE _uid IN (:uids)")
     fun updateSyncedStatus(uids: IntArray): Int
 
 }

@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = CONSTANTS.ATTENDANCE_TABLE)
 data class Attendance(
     @PrimaryKey(autoGenerate = true)
-    val uid: Int = 0,
+    val _id: Int = 0,
 
     /*
     * Not accept null
@@ -18,6 +18,7 @@ data class Attendance(
     val vehicleNo: String,
     val deviceID: String,
     val user: String,
+    val _uid: String,
 
     /*
     * Accept null

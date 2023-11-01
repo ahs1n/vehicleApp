@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.example.vehicleapp.MainApp
 import com.google.android.material.snackbar.Snackbar
@@ -24,7 +23,8 @@ fun String.convertStringToUpperCase(): String {
      * Program that first convert all uper case into lower case then
      * convert fist letter into uppercase
      */
-    val calStr = this.split(" ").map { it.toLowerCase(Locale.ENGLISH).capitalize(Locale.ENGLISH) }
+    val calStr = this.split(" ").map { it.lowercase(Locale.ENGLISH)
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() } }
     return calStr.joinToString(separator = " ")
 }
 
@@ -106,7 +106,7 @@ fun isNetworkConnected(context: Context): Boolean {
 }
 
 fun String.toastUtil(): Toast {
-    return Toast.makeText(MainApp.context, this, Toast.LENGTH_LONG)
+    return Toast.makeText(MainApp.applicationContext(), this, Toast.LENGTH_LONG)
 }
 
 /*

@@ -15,10 +15,8 @@ data class VehiclesItem(
     val id: Int,
 
     @Expose val vehicleNo: String,
-    @Expose val make: String,
     @Expose val model: String,
     @Expose val location: String,
-    @Expose val subLocation: String,
 
     //Check whether timeIn information is available or not
     @Expose val dataExist: Boolean = false
