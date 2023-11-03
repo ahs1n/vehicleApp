@@ -69,6 +69,6 @@ interface VehicleDao {
     fun getAllNoneSyncedAttendanceForm(): List<Attendance>
 
     @Query("UPDATE ${CONSTANTS.ATTENDANCE_TABLE} SET synced = 1 WHERE _uid IN (:uids)")
-    fun updateSyncedStatus(uids: IntArray): Int
+    fun updateSyncedStatus(uids: Array<String>): Int
 
 }

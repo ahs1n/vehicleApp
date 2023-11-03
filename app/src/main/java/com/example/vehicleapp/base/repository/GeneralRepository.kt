@@ -15,10 +15,8 @@ import com.example.vehicleapp.model.response.ServerUploadReturn
 import com.example.vehicleapp.model.utils.Users
 import com.example.vehicleapp.model.utils.Vehicles
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import org.apache.commons.lang3.StringUtils
 import javax.inject.Inject
 
 /**
@@ -112,7 +110,7 @@ class GeneralRepository @Inject constructor(
                 result = data?.let {
                     withContext(Dispatchers.IO){
                         vehicleDao.updateSyncedStatus(
-                            IntArray(it.uids.size) {item-> it.uids[item] }
+                            Array(it.uids.size) {item-> it.uids[item] }
                         )
                         ResultCallBack.Success(it)
                     }
