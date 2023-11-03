@@ -1,16 +1,15 @@
 package com.example.vehicleapp.ui.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.*
-import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.util.StringUtil
 import com.example.vehicleapp.R
 import com.example.vehicleapp.adapters.VehicleListAdapter
 import com.example.vehicleapp.base.FragmentBase
@@ -21,17 +20,13 @@ import com.example.vehicleapp.di.shared.SharedStorage
 import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
-import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.ui.login_activity.LoginActivity
 import com.example.vehicleapp.utils.*
 import com.kennyc.view.MultiStateView
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class VehicleListFragment : FragmentBase() {
@@ -164,7 +159,7 @@ class VehicleListFragment : FragmentBase() {
         /*
         * vehicle search
         * */
-        bi.edtSearchVehicle.setOnEditorActionListener { _, actionId, _ ->
+        /*bi.edtSearchVehicle.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 bi.edtSearchVehicle.hideKeyboard()
                 val s = bi.edtSearchVehicle.text.toString()
@@ -173,7 +168,23 @@ class VehicleListFragment : FragmentBase() {
                 viewModel.searchVehicleFromDB(s)
             }
             false
-        }
+        }*/
+        bi.edtSearchVehicle.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString()
+                adapter.clearVehicleItems()
+                bi.populateTxt.text = "Search: ${query.uppercase(Locale.ENGLISH)}"
+
+                // Perform the search based on the user's input
+                viewModel.searchVehicleFromDB(query)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
 
         /*
         * vehicle search clear
@@ -208,7 +219,7 @@ class VehicleListFragment : FragmentBase() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true)
     }
 
     /*

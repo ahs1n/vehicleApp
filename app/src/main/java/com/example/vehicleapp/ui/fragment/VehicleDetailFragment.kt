@@ -90,6 +90,9 @@ class VehicleDetailFragment : FragmentBase() {
         (activity as MainActivity).supportActionBar?.title =
             "${vehicleRecord.model} ${vehicleRecord.vehicleNo.uppercase(Locale.ENGLISH)}"
 
+        // set vehicle no
+        bi.vehileNo.text = vehicleRecord.vehicleNo.uppercase(Locale.ENGLISH)
+
 
         return bi.root
     }
