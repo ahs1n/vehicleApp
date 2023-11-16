@@ -7,5 +7,5 @@ import javax.inject.Inject
  * @author AliAzazAlam on 5/4/2021.
  */
 class VehicleUseCaseRemote @Inject constructor(private val repository: GeneralDataSource) {
-    suspend operator fun invoke() = repository.getAllVehiclesFromRemote()
+    suspend operator fun invoke(location_id: String) = repository.getAllVehiclesFromRemote(location_id)
 }

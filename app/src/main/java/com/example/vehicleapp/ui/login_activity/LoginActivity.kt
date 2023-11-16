@@ -24,6 +24,7 @@ import com.example.vehicleapp.databinding.ActivityLoginBinding
 import com.example.vehicleapp.di.shared.SharedStorage
 import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.ui.login_activity.login_view.LoginUISource
+import com.example.vehicleapp.utils.CONSTANTS.IS_SAME_USER
 import com.example.vehicleapp.utils.CustomProgressDialog
 import com.example.vehicleapp.utils.gotoActivity
 import com.example.vehicleapp.utils.isNetworkConnected
@@ -71,7 +72,10 @@ class LoginActivity : ActivityBase(), LoginUISource {
                 SUCCESS -> {
                     approval = true
                     it.data?.let { user ->
+                        if (user.username.equals(SharedStorage.getLogInUserName(sharedPrefImpl)))
+                            IS_SAME_USER = true
                         SharedStorage.setLogInUserName(sharedPrefImpl, user.username)
+                        SharedStorage.setUserLocation(sharedPrefImpl, user.location)
                     }
                     gotoActivity(MainActivity::class.java)
                 }

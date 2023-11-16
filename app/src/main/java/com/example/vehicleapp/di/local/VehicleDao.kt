@@ -22,21 +22,25 @@ interface VehicleDao {
     @Query("DELETE FROM ${CONSTANTS.VEHICLE_TABLE}")
     fun deleteAllVehicles()
 
+    @Query("DELETE FROM ${CONSTANTS.VEHICLE_TABLE} WHERE location_id = :location_id")
+    fun deleteVehiclesByUserId(location_id: String)
+
     @Transaction
-    fun updateVehiclesData(vehicles: Vehicles) {
-        deleteAllVehicles()
+    fun updateVehiclesData(vehicles: Vehicles, location_id: String) {
+//        deleteAllVehicles()
+        deleteVehiclesByUserId(location_id)
         insertAllVehicles(vehicles)
     }
 
-    @Query("SELECT * FROM  ${CONSTANTS.VEHICLE_TABLE} WHERE vehicleNo LIKE :vehicleNo ORDER BY id ASC")
-    fun readSpecificVehicleAndAttendance(vehicleNo: String): Flow<List<VehicleAttendance>>
+    @Query("SELECT * FROM  ${CONSTANTS.VEHICLE_TABLE} WHERE location_id = :location_id AND vehicleNo LIKE :vehicleNo ORDER BY id ASC")
+    fun readSpecificVehicleAndAttendance(vehicleNo: String, location_id: String): Flow<List<VehicleAttendance>>
 
     @Query("SELECT * FROM  ${CONSTANTS.VEHICLE_TABLE}")
     fun readAllVehicles(): Flow<List<VehiclesItem>>
 
     @Transaction
-    @Query("SELECT * FROM ${CONSTANTS.VEHICLE_TABLE}")
-    fun getVehicleAndAttendance(): Flow<List<VehicleAttendance>>
+    @Query("SELECT * FROM ${CONSTANTS.VEHICLE_TABLE} WHERE location_id = :location_id")
+    fun getVehicleAndAttendance(location_id: String): Flow<List<VehicleAttendance>>
 
     /*
     * Users
@@ -53,7 +57,7 @@ interface VehicleDao {
         insertAllUsers(users)
     }
 
-    @Query("SELECT full_name,username,id FROM ${CONSTANTS.USER_TABLE} WHERE username = :username and password=:password")
+    @Query("SELECT full_name,username,location,id FROM ${CONSTANTS.USER_TABLE} WHERE username = :username and password=:password")
     fun readUserExist(username: String, password: String): UsersItem?
 
     /*

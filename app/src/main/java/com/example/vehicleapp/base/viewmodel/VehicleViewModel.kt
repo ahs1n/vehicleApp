@@ -9,7 +9,6 @@ import com.example.vehicleapp.base.repository.ResultCallBack
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.*
 import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 import javax.inject.Inject
@@ -22,7 +21,8 @@ class VehicleViewModel @Inject constructor(
     private val vehicleUseCaseLocal: VehicleUseCaseLocal,
     private val searchVehicleUseCaseLocal: SearchVehicleUseCaseLocal,
     private val getAllAttendanceUseCaseLocal: GetAllAttendanceUseCaseLocal,
-    private val uploadAttendanceUseCaseRemote: UploadAttendanceUseCaseRemote
+    private val uploadAttendanceUseCaseRemote: UploadAttendanceUseCaseRemote,
+    private var location_id: String
 ) : ViewModel() {
 
     private val TAG = VehicleViewModel::class.java.simpleName
@@ -46,7 +46,7 @@ class VehicleViewModel @Inject constructor(
     private var searchVehicle = StringUtils.EMPTY
 
     init {
-        fetchVehiclesFromLocalDB()
+        fetchVehiclesFromLocalDB(location_id)
     }
 
     /*
@@ -55,7 +55,7 @@ class VehicleViewModel @Inject constructor(
     fun downloadingVehicles() {
         apiDownloadingDataProgress(true)
         viewModelScope.launch {
-            vehicleUseCaseRemote.invoke().let { data ->
+            vehicleUseCaseRemote.invoke(location_id).let { data ->
                 when (data) {
                     is ResultCallBack.CallException -> {
                         apiDownloadingDataProgress(false)
@@ -80,11 +80,11 @@ class VehicleViewModel @Inject constructor(
     /*
     * Observed function for initiate searching
     * */
-    fun fetchVehiclesFromLocalDB() {
+    fun fetchVehiclesFromLocalDB(location_id: String) {
         _vehicleList.value = ResponseStatusCallbacks.loading(data = null)
         viewModelScope.launch {
             try {
-                vehicleUseCaseLocal().collect { dataset ->
+                vehicleUseCaseLocal(location_id).collect { dataset ->
                     if (dataset.isNullOrEmpty())
                         _vehicleList.value = ResponseStatusCallbacks.error(
                             data = null,
@@ -125,9 +125,9 @@ class VehicleViewModel @Inject constructor(
     * */
     fun retryConnection() {
         if (searchVehicle == StringUtils.EMPTY) {
-            fetchVehiclesFromLocalDB()
+            fetchVehiclesFromLocalDB(location_id)
         } else {
-            fetchSearchVehiclesFromLocalDB(searchVehicle)
+            fetchSearchVehiclesFromLocalDB(searchVehicle, location_id)
         }
     }
 
@@ -137,19 +137,19 @@ class VehicleViewModel @Inject constructor(
     fun searchVehicleFromDB(vehicleNo: String) {
         searchVehicle = vehicleNo
         if (searchVehicle == StringUtils.EMPTY) {
-            fetchVehiclesFromLocalDB()
+            fetchVehiclesFromLocalDB(location_id)
         } else
-            fetchSearchVehiclesFromLocalDB(vehicleNo)
+            fetchSearchVehiclesFromLocalDB(vehicleNo, location_id)
     }
 
     /*
     * Query to fetch vehicles from server
     * */
-    private fun fetchSearchVehiclesFromLocalDB(search: String) {
+    private fun fetchSearchVehiclesFromLocalDB(search: String, location_id: String) {
         _vehicleList.value = ResponseStatusCallbacks.loading(data = null)
         viewModelScope.launch {
             try {
-                searchVehicleUseCaseLocal(vehicleNo = "%$search%").collect { dataset ->
+                searchVehicleUseCaseLocal(vehicleNo = "%$search%", location_id).collect { dataset ->
                     if (dataset.isNullOrEmpty())
                         _vehicleList.value = ResponseStatusCallbacks.error(
                             data = null,

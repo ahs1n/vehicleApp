@@ -6,15 +6,21 @@ import com.example.vehicleapp.model.response.ServerUploadReturn
 import com.example.vehicleapp.model.utils.Users
 import com.example.vehicleapp.model.utils.Vehicles
 import com.example.vehicleapp.utils.CONSTANTS
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 /**
  * @author AliAzazAlam on 5/4/2021.
  */
 interface AuthApi {
 
-    @GET(ApiRoutes.GET_DATA + CONSTANTS.VEHICLE_TABLE)
-    suspend fun getVehicleServerData(): ApiResponse<Vehicles>
+    @GET(ApiRoutes.GET_DATA)
+    suspend fun getVehicleServerData(
+        @Query("table") table: String,
+        @Query("where") where: String
+    ): ApiResponse<Vehicles>
 
     @GET(ApiRoutes.GET_DATA + CONSTANTS.USER_TABLE)
     suspend fun getUserServerData(): ApiResponse<Users>

@@ -17,6 +17,7 @@ data class VehiclesItem(
     @Expose val vehicleNo: String,
     @Expose val model: String,
     @Expose val location: String,
+    @Expose val location_id: String,
 
     //Check whether timeIn information is available or not
     @Expose val dataExist: Boolean = false

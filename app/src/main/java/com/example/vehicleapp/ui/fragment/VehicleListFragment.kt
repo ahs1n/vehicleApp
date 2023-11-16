@@ -82,6 +82,11 @@ class VehicleListFragment : FragmentBase() {
             viewModelFactory
         )
 
+//        if(IS_SAME_USER)
+//            viewModel.fetchVehiclesFromLocalDB()
+//        else
+//            bi.multiStateView.viewState = MultiStateView.ViewState.EMPTY
+
         /*
         * Initiating recyclerview
         * */
@@ -193,7 +198,7 @@ class VehicleListFragment : FragmentBase() {
             bi.edtSearchVehicle.text = null
             adapter.clearVehicleItems()
             bi.populateTxt.text = "Search: All Vehicles"
-            viewModel.fetchVehiclesFromLocalDB()
+            viewModel.fetchVehiclesFromLocalDB(SharedStorage.getUserLocation(sharedPrefImpl))
         }
 
     }

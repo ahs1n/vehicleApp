@@ -1,6 +1,9 @@
 package com.example.vehicleapp.base.repository
 
-import com.example.vehicleapp.model.*
+import com.example.vehicleapp.model.Attendance
+import com.example.vehicleapp.model.UsersItem
+import com.example.vehicleapp.model.VehicleAttendance
+import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.model.response.ServerUploadReturn
 import com.example.vehicleapp.model.utils.Users
 import com.example.vehicleapp.model.utils.Vehicles
@@ -23,13 +26,13 @@ interface GeneralDataSource {
     /*
     * Get all vehicles
     * */
-    suspend fun getAllVehiclesFromRemote(): ResultCallBack<Vehicles>
+    suspend fun getAllVehiclesFromRemote(location_id: String): ResultCallBack<Vehicles>
 
     suspend fun getAllVehiclesFromDB(): Flow<List<VehiclesItem>>
 
-    suspend fun getAllVehiclesAndAttendanceFromDB(): Flow<List<VehicleAttendance>>
+    suspend fun getAllVehiclesAndAttendanceFromDB(location_id: String): Flow<List<VehicleAttendance>>
 
-    suspend fun getSearchVehicleFromDB(vehicleNo: String): Flow<List<VehicleAttendance>>
+    suspend fun getSearchVehicleFromDB(vehicleNo: String, location_id: String): Flow<List<VehicleAttendance>>
 
     suspend fun insertAttendanceVehicle(attendance: Attendance): Long
 

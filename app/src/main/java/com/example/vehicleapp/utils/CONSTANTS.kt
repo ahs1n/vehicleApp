@@ -24,4 +24,7 @@ object CONSTANTS {
     * */
     const val LOGIN_USERNAME = "login_username"
     const val LOGIN_FLAG = "login_flag"
+    const val USER_LOCATION = "location_flag"
+
+    var IS_SAME_USER = false
 }

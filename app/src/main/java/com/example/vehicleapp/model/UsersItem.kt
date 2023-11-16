@@ -15,5 +15,6 @@ data class UsersItem(
 
     @Expose val full_name: String,
     @Expose val password: String?,
-    @Expose val username: String
+    @Expose val username: String,
+    @Expose val location: String
 ) : Parcelable

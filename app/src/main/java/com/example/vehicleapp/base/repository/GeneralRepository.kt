@@ -1,6 +1,8 @@
 package com.example.vehicleapp.base.repository
 
+import android.content.Context
 import androidx.annotation.WorkerThread
+import com.example.vehicleapp.MainApp
 import com.example.vehicleapp.di.auth.AuthApi
 import com.example.vehicleapp.di.auth.remote.message
 import com.example.vehicleapp.di.auth.remote.onErrorSuspend
@@ -14,6 +16,8 @@ import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.model.response.ServerUploadReturn
 import com.example.vehicleapp.model.utils.Users
 import com.example.vehicleapp.model.utils.Vehicles
+import com.example.vehicleapp.utils.CONSTANTS
+import com.example.vehicleapp.utils.CONSTANTS.USER_LOCATION
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -50,14 +54,21 @@ class GeneralRepository @Inject constructor(
     }
 
     @WorkerThread
-    override suspend fun getAllVehiclesFromRemote(): ResultCallBack<Vehicles> {
+    override suspend fun getAllVehiclesFromRemote(location_id: String): ResultCallBack<Vehicles> {
         var result: ResultCallBack<Vehicles>? = null
-        apiService.getVehicleServerData().apply {
+        apiService.getVehicleServerData(
+            CONSTANTS.VEHICLE_TABLE,
+            "location_id=" + MainApp.applicationContext().getSharedPreferences(
+                MainApp.applicationContext().applicationContext.packageName,
+                Context.MODE_PRIVATE
+            ).getString(USER_LOCATION, "")
+        ).apply {
             this.onSuccessSuspend {
                 result = data?.let {
                     withContext(Dispatchers.IO) {
                         vehicleDao.updateVehiclesData(
-                            it
+                            it,
+                            location_id
                         )
                         ResultCallBack.Success(it)
                     }
@@ -75,12 +86,12 @@ class GeneralRepository @Inject constructor(
         return vehicleDao.readAllVehicles()
     }
 
-    override suspend fun getAllVehiclesAndAttendanceFromDB(): Flow<List<VehicleAttendance>> {
-        return vehicleDao.getVehicleAndAttendance()
+    override suspend fun getAllVehiclesAndAttendanceFromDB(location_id: String): Flow<List<VehicleAttendance>> {
+        return vehicleDao.getVehicleAndAttendance(location_id)
     }
 
-    override suspend fun getSearchVehicleFromDB(vehicleNo: String): Flow<List<VehicleAttendance>> {
-        return vehicleDao.readSpecificVehicleAndAttendance(vehicleNo)
+    override suspend fun getSearchVehicleFromDB(vehicleNo: String, location_id: String): Flow<List<VehicleAttendance>> {
+        return vehicleDao.readSpecificVehicleAndAttendance(vehicleNo, location_id)
     }
 
     override suspend fun getLoginInformation(username: String, password: String): UsersItem? =
