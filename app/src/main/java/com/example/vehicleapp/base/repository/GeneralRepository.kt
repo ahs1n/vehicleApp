@@ -90,7 +90,10 @@ class GeneralRepository @Inject constructor(
         return vehicleDao.getVehicleAndAttendance(location_id)
     }
 
-    override suspend fun getSearchVehicleFromDB(vehicleNo: String, location_id: String): Flow<List<VehicleAttendance>> {
+    override suspend fun getSearchVehicleFromDB(
+        vehicleNo: String,
+        location_id: String
+    ): Flow<List<VehicleAttendance>> {
         return vehicleDao.readSpecificVehicleAndAttendance(vehicleNo, location_id)
     }
 
@@ -119,9 +122,9 @@ class GeneralRepository @Inject constructor(
         apiService.uploadAttendanceDataToServer(attendance = attendanceLst).apply {
             this.onSuccessSuspend {
                 result = data?.let {
-                    withContext(Dispatchers.IO){
+                    withContext(Dispatchers.IO) {
                         vehicleDao.updateSyncedStatus(
-                            Array(it.uids.size) {item-> it.uids[item] }
+                            Array(it.uids.size) { item -> it.uids[item] }
                         )
                         ResultCallBack.Success(it)
                     }

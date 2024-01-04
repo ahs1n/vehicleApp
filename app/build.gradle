@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace 'com.example.vehicleapp'
-    compileSdkVersion 32
+    compileSdkVersion 34
 //    buildToolsVersion "30.0.3"
 
     buildFeatures {
@@ -18,7 +18,7 @@ android {
     defaultConfig {
         applicationId "com.example.vehicleapp"
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 34
         versionCode 1
         versionName "0.1"
 
