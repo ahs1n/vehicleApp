@@ -130,9 +130,9 @@ class LoginActivity : ActivityBase(), LoginUISource {
     * 3. If both of above conditions are okay then start coroutine to check login and proceed to MainActivity
     * */
     fun onLoginClick(v: View) {
-        if (!permissionFlag)
-            checkPermissions()
-        else {
+//        if (!permissionFlag)
+//            checkPermissions()
+//        else {
             // Store values at the time of the login attempt.
             val username = bi.username.text.toString()
             val password = bi.password.text.toString()
@@ -153,7 +153,7 @@ class LoginActivity : ActivityBase(), LoginUISource {
                 }
             }
 
-        }
+//        }
     }
 
     /*
