@@ -1,6 +1,5 @@
 package com.example.vehicleapp.utils
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.graphics.BlendMode
@@ -9,10 +8,11 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.util.Log
+import android.view.LayoutInflater
 import androidx.core.content.res.ResourcesCompat
+import androidx.databinding.DataBindingUtil
 import com.example.vehicleapp.R
-import kotlinx.android.synthetic.main.custom_progress_dialog.view.*
+import com.example.vehicleapp.databinding.CustomProgressDialogBinding
 
 /**
  * @author johncodeos on 6/17/2021.
@@ -26,14 +26,21 @@ object CustomProgressDialog {
 
         if (this::dialog.isInitialized && dialog.isShowing) return
 
-        val inflater = (context as Activity).layoutInflater
-        val view = inflater.inflate(R.layout.custom_progress_dialog, null)
+        val bi: CustomProgressDialogBinding =
+            DataBindingUtil.inflate(
+                LayoutInflater.from(context),
+                R.layout.custom_progress_dialog,
+                null,
+                false
+            )
+
+
         if (title != null) {
-            view.cp_title.text = title
+            bi.cpTitle.text = title
         }
 
         // Card Color
-        view.cp_cardview.setCardBackgroundColor(
+        bi.cpCardview.setCardBackgroundColor(
             ResourcesCompat.getColor(
                 context.resources,
                 R.color.purple_700,
@@ -43,15 +50,15 @@ object CustomProgressDialog {
 
         // Progress Bar Color
         setColorFilter(
-            view.cp_pbar.indeterminateDrawable,
+            bi.cpPbar.indeterminateDrawable,
             ResourcesCompat.getColor(context.resources, R.color.teal_700, null)
         )
 
         // Text Color
-        view.cp_title.setTextColor(Color.BLACK)
+        bi.cpTitle.setTextColor(Color.BLACK)
 
         dialog = CustomDialog(context)
-        dialog.setContentView(view)
+        dialog.setContentView(bi.root)
         dialog.show()
     }
 

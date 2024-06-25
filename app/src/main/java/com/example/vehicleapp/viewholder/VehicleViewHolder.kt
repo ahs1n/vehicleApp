@@ -9,6 +9,7 @@ import androidx.databinding.library.baseAdapters.BR
 import com.example.vehicleapp.databinding.ItemVehicleLayoutBinding
 import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
+import com.example.vehicleapp.utils.GenericListeners
 
 /**
  * @author AliAzazAlam on 5/4/2021.
@@ -16,10 +17,12 @@ import com.example.vehicleapp.model.VehiclesItem
 class VehicleViewHolder(private val bi: ItemVehicleLayoutBinding) :
     RecyclerView.ViewHolder(bi.root) {
 
-    fun bind(item: VehicleAttendance) {
+    fun bind(item: VehicleAttendance, position:Int, clickListener:GenericListeners) {
         bi.apply {
             bi.setVariable(BR.vehicleItem, item.vehicles)
             bi.setVariable(BR.attendanceItem, item.attendance)
+            bi.setVariable(BR.position, position)
+            bi.setVariable(BR.listener, clickListener)
             bi.executePendingBindings()
         }
     }

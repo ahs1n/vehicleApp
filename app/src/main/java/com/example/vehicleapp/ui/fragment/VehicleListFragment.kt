@@ -207,16 +207,14 @@ class VehicleListFragment : FragmentBase() {
     * Initialize recyclerView with onClickListener
     * */
     private fun callingRecyclerView() {
-        adapter = VehicleListAdapter(object : VehicleListAdapter.OnItemClickListener {
-            override fun onItemClick(item: VehiclesItem, attendance: Attendance?, position: Int) {
-                findNavController().navigate(
-                    VehicleListFragmentDirections.actionVehicleListFragmentToVehicleDetailFragment(
-                        item,
-                        attendance
-                    )
+        adapter = VehicleListAdapter { item, attendance, position ->
+            findNavController().navigate(
+                VehicleListFragmentDirections.actionVehicleListFragmentToVehicleDetailFragment(
+                    item,
+                    attendance
                 )
-            }
-        })
+            )
+        }
         adapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         bi.vehicleList.adapter = adapter

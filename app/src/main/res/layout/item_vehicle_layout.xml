@@ -19,6 +19,14 @@
         <variable
             name="attendanceItem"
             type="com.example.vehicleapp.model.Attendance" />
+
+        <variable
+            name="listener"
+            type="com.example.vehicleapp.utils.GenericListeners" />
+
+        <variable
+            name="position"
+            type="Integer" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -109,6 +117,7 @@
                 android:layout_gravity="end"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/teal_700"
+                android:onClick="@{()->listener.onItemClick(vehicleItem,attendanceItem,position)}"
                 app:attendanceButtonText="@{attendanceItem}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
