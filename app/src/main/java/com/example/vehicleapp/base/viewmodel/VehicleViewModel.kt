@@ -1,16 +1,26 @@
 package com.example.vehicleapp.base.viewmodel
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vehicleapp.R
+import com.example.vehicleapp.base.repository.ResponseStates
 import com.example.vehicleapp.base.repository.ResponseStatusCallbacks
 import com.example.vehicleapp.base.repository.ResultCallBack
-import com.example.vehicleapp.base.viewmodel.vehicle_usecases.*
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.GetAllAttendanceUseCaseLocal
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.SearchVehicleUseCaseLocal
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.UploadAttendanceUseCaseRemote
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseLocal
+import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseRemote
 import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.utils.CONSTANTS
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 import javax.inject.Inject
@@ -24,21 +34,27 @@ class VehicleViewModel @Inject constructor(
     private val searchVehicleUseCaseLocal: SearchVehicleUseCaseLocal,
     private val getAllAttendanceUseCaseLocal: GetAllAttendanceUseCaseLocal,
     private val uploadAttendanceUseCaseRemote: UploadAttendanceUseCaseRemote,
-    private var sharedPreferences: SharedPreferences
+    sharedPreferences: SharedPreferences,
+    private val context: Context
 ) : ViewModel() {
 
     private val TAG = VehicleViewModel::class.java.simpleName
-    private var location_id = StringUtils.EMPTY
+    private var searchVehicle = StringUtils.EMPTY
+
+    val locationId =
+        sharedPreferences.getString(CONSTANTS.USER_LOCATION, StringUtils.EMPTY) ?: StringUtils.EMPTY
 
     private val _vehicleList: MutableLiveData<ResponseStatusCallbacks<List<VehicleAttendance>>> =
         MutableLiveData()
-
     val vehiclesResponse: MutableLiveData<ResponseStatusCallbacks<List<VehicleAttendance>>>
         get() = _vehicleList
 
+    private val _vehicleListDB = MutableSharedFlow<ResponseStates<ArrayList<VehicleAttendance>?>>()
+    val vehicleListDB: SharedFlow<ResponseStates<ArrayList<VehicleAttendance>?>>
+        get() = _vehicleListDB
+
     private val _selectedVehicle: MutableLiveData<ResponseStatusCallbacks<VehiclesItem>> =
         MutableLiveData()
-
     val selectedVehicleResponse: MutableLiveData<ResponseStatusCallbacks<VehiclesItem>>
         get() = _selectedVehicle
 
@@ -46,26 +62,13 @@ class VehicleViewModel @Inject constructor(
 
     val responseUpload = MutableLiveData<String>().apply { value = StringUtils.EMPTY }
 
-    private var searchVehicle = StringUtils.EMPTY
-
-    init {
-        location_id = sharedPreferences.getString(
-            CONSTANTS.USER_LOCATION,
-            StringUtils.EMPTY
-        ) ?: StringUtils.EMPTY
-    }
-
-    init {
-        fetchVehiclesFromLocalDB(location_id)
-    }
-
     /*
     * downloading vehicles data and register exception for exception handelling
     * */
     fun downloadingVehicles() {
         apiDownloadingDataProgress(true)
         viewModelScope.launch {
-            vehicleUseCaseRemote.invoke(location_id).let { data ->
+            vehicleUseCaseRemote.invoke(locationId).let { data ->
                 when (data) {
                     is ResultCallBack.CallException -> {
                         apiDownloadingDataProgress(false)
@@ -92,25 +95,26 @@ class VehicleViewModel @Inject constructor(
     /*
     * Observed function for initiate searching
     * */
-    fun fetchVehiclesFromLocalDB(location_id: String) {
-        _vehicleList.value = ResponseStatusCallbacks.loading(data = null)
+    fun fetchVehiclesFromLocalDB(locationId: String) {
         viewModelScope.launch {
+            _vehicleListDB.emit(ResponseStates.Loading)
             try {
-                vehicleUseCaseLocal(location_id).collect { dataset ->
-                    if (dataset.isNullOrEmpty())
-                        _vehicleList.value = ResponseStatusCallbacks.error(
-                            data = null,
-                            "Sorry vehicles not found"
+                vehicleUseCaseLocal(locationId).collectLatest { dataset ->
+                    if (dataset.isEmpty())
+                        _vehicleListDB.emit(
+                            ResponseStates.Success(
+                                data = null,
+                                message = context.getString(R.string.empty_vehicle_message)
+                            )
                         )
                     else {
-                        _vehicleList.value = ResponseStatusCallbacks.success(
-                            data = dataset,
-                            "Vehicles received"
-                        )
+                        val sortedVehiclesList = dataset as ArrayList
+                        sortedVehiclesList.sortByDescending { it.attendance?.let { item -> item.meter_in != null && item.meter_out == null } }
+                        _vehicleListDB.emit(ResponseStates.Success(sortedVehiclesList))
                     }
                 }
             } catch (e: Exception) {
-                _vehicleList.value = ResponseStatusCallbacks.error(null, e.message.toString())
+                _vehicleListDB.emit(ResponseStates.Error(e.message.toString()))
             }
         }
     }
@@ -137,9 +141,9 @@ class VehicleViewModel @Inject constructor(
     * */
     fun retryConnection() {
         if (searchVehicle == StringUtils.EMPTY) {
-            fetchVehiclesFromLocalDB(location_id)
+            fetchVehiclesFromLocalDB(locationId)
         } else {
-            fetchSearchVehiclesFromLocalDB(searchVehicle, location_id)
+            fetchSearchVehiclesFromLocalDB(searchVehicle, locationId)
         }
     }
 
@@ -149,9 +153,9 @@ class VehicleViewModel @Inject constructor(
     fun searchVehicleFromDB(vehicleNo: String) {
         searchVehicle = vehicleNo
         if (searchVehicle == StringUtils.EMPTY) {
-            fetchVehiclesFromLocalDB(location_id)
+            fetchVehiclesFromLocalDB(locationId)
         } else
-            fetchSearchVehiclesFromLocalDB(vehicleNo, location_id)
+            fetchSearchVehiclesFromLocalDB(vehicleNo, locationId)
     }
 
     /*

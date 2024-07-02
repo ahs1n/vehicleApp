@@ -16,8 +16,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/purple_200"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/purple_200">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/fldGrpSearchPhotos"
@@ -72,9 +72,9 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/fldGrpMain"
-                android:background="@color/purple_200"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/purple_200">
 
                 <TextView
                     android:id="@+id/populateTxt"
@@ -90,31 +90,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.kennyc.view.MultiStateView
-                    android:id="@+id/multiStateView"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/vehicle_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_marginBottom="@dimen/_8sdp"
                     android:padding="@dimen/_5sdp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/populateTxt"
-                    app:msv_animateViewChanges="true"
-                    app:msv_emptyView="@layout/empty_view"
-                    app:msv_errorView="@layout/error_view"
-                    app:msv_loadingView="@layout/loading_view"
-                    app:msv_viewState="content">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/vehicle_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/item_vehicle_layout" />
-
-                </com.kennyc.view.MultiStateView>
+                    tools:listitem="@layout/item_vehicle_layout" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

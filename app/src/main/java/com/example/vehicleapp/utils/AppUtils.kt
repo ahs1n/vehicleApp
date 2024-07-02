@@ -15,7 +15,8 @@ import com.example.vehicleapp.MainApp
 import com.google.android.material.snackbar.Snackbar
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 
 fun String.convertStringToUpperCase(): String {
@@ -23,8 +24,10 @@ fun String.convertStringToUpperCase(): String {
      * Program that first convert all uper case into lower case then
      * convert fist letter into uppercase
      */
-    val calStr = this.split(" ").map { it.lowercase(Locale.ENGLISH)
-        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() } }
+    val calStr = this.split(" ").map {
+        it.lowercase(Locale.ENGLISH)
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() }
+    }
     return calStr.joinToString(separator = " ")
 }
 
@@ -64,6 +67,14 @@ fun EditText.hideKeyboard() {
 
 fun <T : AppCompatActivity> AppCompatActivity.gotoActivity(targetActivityClass: Class<T>) {
     val intent = Intent(this, targetActivityClass)
+    startActivity(intent)
+}
+
+inline fun <reified T> Context.gotoActivityWithNoBackUp() {
+    val intent = Intent(this, T::class.java)
+        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
 }
 

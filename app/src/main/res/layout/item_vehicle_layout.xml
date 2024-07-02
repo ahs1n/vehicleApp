@@ -65,14 +65,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/driverImg"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_55sdp"
                     android:contentDescription="@string/transport_image"
                     android:paddingStart="@dimen/_12sdp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/baby_car" />
+                    tools:src="@drawable/baby_car" />
 
                 <TextView
                     android:id="@+id/vehicleNo_txt"

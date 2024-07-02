@@ -20,17 +20,16 @@ import com.example.vehicleapp.MainApp
 import com.example.vehicleapp.R
 import com.example.vehicleapp.base.ActivityBase
 import com.example.vehicleapp.base.repository.ResponseStates
-import com.example.vehicleapp.base.repository.ResponseStatus.*
+import com.example.vehicleapp.base.repository.ResponseStatus.ERROR
+import com.example.vehicleapp.base.repository.ResponseStatus.LOADING
+import com.example.vehicleapp.base.repository.ResponseStatus.SUCCESS
 import com.example.vehicleapp.base.viewmodel.LoginViewModel
 import com.example.vehicleapp.databinding.ActivityLoginBinding
 import com.example.vehicleapp.di.shared.SharedStorage
 import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.ui.login_activity.login_view.LoginUISource
-import com.example.vehicleapp.utils.AlertDialogFragment
 import com.example.vehicleapp.utils.CONSTANTS.IS_SAME_USER
-import com.example.vehicleapp.utils.CallBack
 import com.example.vehicleapp.utils.CustomProgressDialog
-import com.example.vehicleapp.utils.gotoActivity
 import com.example.vehicleapp.utils.gotoActivityWithNoBackUp
 import com.example.vehicleapp.utils.isNetworkConnected
 import com.example.vehicleapp.utils.obtainViewModel
@@ -59,8 +58,8 @@ class LoginActivity : ActivityBase(), LoginUISource {
         * Check if the user is already exist
         * */
         if (SharedStorage.getLogFlag(sharedPrefImpl)) {
-            gotoActivity(MainActivity::class.java)
             finish()
+            gotoActivityWithNoBackUp<MainActivity>()
         }
 
         /*
@@ -83,7 +82,8 @@ class LoginActivity : ActivityBase(), LoginUISource {
                         SharedStorage.setLogInUserName(sharedPrefImpl, user.username)
                         SharedStorage.setUserLocation(sharedPrefImpl, user.location)
                     }
-                    gotoActivity(MainActivity::class.java)
+                    finish()
+                    gotoActivityWithNoBackUp<MainActivity>()
                 }
 
                 ERROR -> {
@@ -151,7 +151,8 @@ class LoginActivity : ActivityBase(), LoginUISource {
             job.join()
             if (approval) {
                 showProgress(false)
-                gotoActivity(MainActivity::class.java)
+                finish()
+                gotoActivityWithNoBackUp<MainActivity>()
             }
         }
 

@@ -14,6 +14,12 @@ fun <T : ViewModel> Fragment.obtainViewModel(
 ) =
     ViewModelProvider(activity, viewModelFactory).get(viewModelClass)
 
+fun <T : ViewModel> FragmentActivity.obtainViewModel(
+    viewModelClass: Class<T>,
+    viewModelFactory: ViewModelProvider.Factory
+) =
+    ViewModelProvider(this, viewModelFactory).get(viewModelClass)
+
 fun <T : ViewModel> AppCompatActivity.obtainViewModel(
     viewModelClass: Class<T>,
     viewModelFactory: ViewModelProvider.Factory

@@ -1,9 +1,9 @@
 package com.example.vehicleapp.di.modules
 
+import com.example.vehicleapp.BuildConfig
 import com.example.vehicleapp.api.MockInterceptor
 import com.example.vehicleapp.di.auth.AuthApi
 import com.example.vehicleapp.di.auth.remote.ApiResponseCallAdapterFactory
-import com.example.vehicleapp.utils.CONSTANTS
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -38,7 +38,7 @@ class NetworkApiModule {
         scalarsConverterFactory: ScalarsConverterFactory,
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(com.example.vehicleapp.BuildConfig.FLAVOR_URL)
+            .baseUrl(BuildConfig.FLAVOR_URL)
             .client(okHttpClient)
             .addConverterFactory(scalarsConverterFactory)
             .addConverterFactory(gsonConverterFactory)
@@ -58,7 +58,7 @@ class NetworkApiModule {
                 item.addInterceptor(log)
                     //.retryOnConnectionFailure(true)
             }
-        if (CONSTANTS.mockingEnabled)
+        if (BuildConfig.FLAVOR == "dev" && BuildConfig.BUILD_TYPE == "debug")
             builder.addInterceptor(mockInterceptor)
 
         return builder.build()
@@ -87,7 +87,7 @@ class NetworkApiModule {
     fun getGsonBuilder(): Gson {
         return GsonBuilder()
             .setLenient()
-            .create();
+            .create()
     }
 
 }

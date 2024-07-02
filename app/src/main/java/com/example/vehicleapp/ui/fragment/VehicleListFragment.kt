@@ -4,42 +4,58 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.library.baseAdapters.BR
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vehicleapp.R
 import com.example.vehicleapp.adapters.VehicleListAdapter
 import com.example.vehicleapp.base.FragmentBase
-import com.example.vehicleapp.base.repository.ResponseStatus
+import com.example.vehicleapp.base.repository.ResponseStates
 import com.example.vehicleapp.base.viewmodel.VehicleViewModel
 import com.example.vehicleapp.databinding.FragmentVehicleListBinding
 import com.example.vehicleapp.di.shared.SharedStorage
-import com.example.vehicleapp.model.Attendance
-import com.example.vehicleapp.model.VehicleAttendance
-import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.ui.login_activity.LoginActivity
-import com.example.vehicleapp.utils.*
-import com.kennyc.view.MultiStateView
-import kotlinx.coroutines.delay
+import com.example.vehicleapp.utils.AlertDialogFragment
+import com.example.vehicleapp.utils.CallBack
+import com.example.vehicleapp.utils.CustomProgressDialog
+import com.example.vehicleapp.utils.gotoActivityWithNoBackUp
+import com.example.vehicleapp.utils.obtainViewModel
+import com.example.vehicleapp.utils.showSnackBar
+import com.example.vehicleapp.utils.toastUtil
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
-import java.util.*
+import java.util.Locale
 
 
 class VehicleListFragment : FragmentBase() {
 
-    lateinit var viewModel: VehicleViewModel
-    lateinit var adapter: VehicleListAdapter
     lateinit var bi: FragmentVehicleListBinding
-    var actionBarHeight = 0
+
+    private var adapter: VehicleListAdapter? = null
+    lateinit var viewModel: VehicleViewModel
+    private var actionBarHeight = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        /*
+        * Obtaining ViewModel
+        * */
+        viewModel = requireActivity().obtainViewModel(
+            VehicleViewModel::class.java,
+            viewModelFactory
+        )
+
         /*
         * Initializing databinding
         * */
@@ -71,16 +87,8 @@ class VehicleListFragment : FragmentBase() {
         return bi.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        /*
-        * Obtaining ViewModel
-        * */
-        viewModel = obtainViewModel(
-            this,
-            VehicleViewModel::class.java,
-            viewModelFactory
-        )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
 //        if(IS_SAME_USER)
 //            viewModel.fetchVehiclesFromLocalDB()
@@ -91,66 +99,24 @@ class VehicleListFragment : FragmentBase() {
         * Initiating recyclerview
         * */
         callingRecyclerView()
+        setObservers()
 
-        /*
-        * Fetch vehicles list
-        * */
-        viewModel.vehiclesResponse.observe(viewLifecycleOwner, { it ->
-            when (it.status) {
-                ResponseStatus.SUCCESS -> {
-                    it.data?.run {
-                        val recVehicle = it.data as ArrayList<VehicleAttendance>
-                        if (recVehicle.isNotEmpty())
-                            recVehicle.sortByDescending { it.attendance?.let { item -> item.meter_in != null && item.meter_out == null } }
-                        adapter.vehicleItems = recVehicle
-                        bi.multiStateView.viewState = MultiStateView.ViewState.CONTENT
-                    }
-                }
-                ResponseStatus.ERROR -> {
-                    /*it.data?.let { item ->
-                        if (item.page == 1)
-                            bi.multiStateView.viewState = MultiStateView.ViewState.EMPTY
-                        else
-                            bi.nestedScrollView.showSnackBar(
-                                message = it.message.toString()
-                            )
-                    } ?: run {
-                        bi.multiStateView.viewState = MultiStateView.ViewState.ERROR
-                        bi.nestedScrollView.showSnackBar(
-                            message = "Internet not available",
-                            action = "Retry"
-                        ) {
-                            viewModel.retryConnection()
-                        }
+        viewModel.fetchVehiclesFromLocalDB(viewModel.locationId)
 
-                    }*/
-
-                    bi.multiStateView.viewState = MultiStateView.ViewState.EMPTY
-                }
-                ResponseStatus.LOADING -> {
-                    lifecycleScope.launch {
-                        MultiStateView.ViewState.LOADING
-                        delay(2000)
-                    }
-                }
+        viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner) {
+            if (it) {
+                CustomProgressDialog.show(requireContext(), getString(R.string.processing_data))
+            } else {
+                CustomProgressDialog.dismiss()
             }
+        }
 
-            viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner, {
-                if (it) {
-                    CustomProgressDialog.show(requireContext(), getString(R.string.processing_data))
-                } else {
-                    CustomProgressDialog.dismiss()
-                }
-            })
-
-            viewModel.responseUpload.observe(viewLifecycleOwner, {
-                if (it != StringUtils.EMPTY) {
-                    it.toastUtil().show()
-                    viewModel.responseUpload.value = StringUtils.EMPTY
-                }
-            })
-
-        })
+        viewModel.responseUpload.observe(viewLifecycleOwner) {
+            if (it != StringUtils.EMPTY) {
+                it.toastUtil().show()
+                viewModel.responseUpload.value = StringUtils.EMPTY
+            }
+        }
 
         /*
         * Checking scrollview scroll end
@@ -168,7 +134,7 @@ class VehicleListFragment : FragmentBase() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 bi.edtSearchVehicle.hideKeyboard()
                 val s = bi.edtSearchVehicle.text.toString()
-                adapter.clearVehicleItems()
+                adapter?.clearVehicleItems()
                 bi.populateTxt.text = "Search: ${s.toUpperCase(Locale.ENGLISH)}"
                 viewModel.searchVehicleFromDB(s)
             }
@@ -180,7 +146,7 @@ class VehicleListFragment : FragmentBase() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s.toString()
-                adapter.clearVehicleItems()
+                adapter?.clearVehicleItems()
                 bi.populateTxt.text = "Search: ${query.uppercase(Locale.ENGLISH)}"
 
                 // Perform the search based on the user's input
@@ -196,11 +162,10 @@ class VehicleListFragment : FragmentBase() {
         * */
         bi.inputSearchVehicle.setEndIconOnClickListener {
             bi.edtSearchVehicle.text = null
-            adapter.clearVehicleItems()
-            bi.populateTxt.text = "Search: All Vehicles"
-            viewModel.fetchVehiclesFromLocalDB(SharedStorage.getUserLocation(sharedPrefImpl))
+            adapter?.clearVehicleItems()
+            bi.populateTxt.text = getString(R.string.search_latest)
+            viewModel.fetchVehiclesFromLocalDB(viewModel.locationId)
         }
-
     }
 
     /*
@@ -215,9 +180,56 @@ class VehicleListFragment : FragmentBase() {
                 )
             )
         }
-        adapter.stateRestorationPolicy =
+        adapter?.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         bi.vehicleList.adapter = adapter
+    }
+
+    /*
+    * Set Observers
+    * */
+    private fun setObservers() {
+        lifecycleScope.launch {
+
+            /*
+            * Fetch vehicle data
+            * */
+            launch {
+                viewModel.vehicleListDB
+                    .flowWithLifecycle(lifecycle)
+                    .collect {
+                        when (it) {
+                            is ResponseStates.Error -> {
+                                showProgressDialog(false)
+                                bi.root.showSnackBar(message = it.message)
+                            }
+
+                            ResponseStates.Loading -> showProgressDialog(true)
+                            is ResponseStates.Success -> {
+                                showProgressDialog(false)
+                                if (it.data.isNullOrEmpty()) {
+                                    bi.populateTxt.text = it.message
+                                } else {
+                                    bi.populateTxt.text = getString(R.string.search_latest)
+                                    adapter?.vehicleItems = it.data
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+
+    /*
+    * Progress dialog show
+    * */
+    private fun showProgressDialog(flag: Boolean) {
+        if (flag) {
+            CustomProgressDialog.show(requireContext(), getString(R.string.downloadin_data))
+        } else {
+            CustomProgressDialog.dismiss()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -248,10 +260,12 @@ class VehicleListFragment : FragmentBase() {
 
                 true
             }
+
             R.id.download_menu -> {
                 viewModel.downloadingVehicles()
                 true
             }
+
             R.id.logout_menu -> {
                 AlertDialogFragment(
                     title = getString(R.string.logout_message),
@@ -272,10 +286,12 @@ class VehicleListFragment : FragmentBase() {
                 )
                 true
             }
+
             R.id.upload_menu -> {
                 viewModel.uploadDataToServer()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
