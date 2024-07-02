@@ -1,5 +1,7 @@
 package com.example.vehicleapp.base.repository
 
+import retrofit2.Response
+
 /**
  * @author AliAzazAlam on 5/4/2021.
  */
@@ -32,4 +34,12 @@ sealed class ResultCallBack<out T> {
     data class Error<out T>(val error: String) : ResultCallBack<T>()
     data class CallException<out T>(val exception: Exception) : ResultCallBack<T>()
 }
+
+
+sealed class ResponseStates<out T>  {
+    data class Success<out T>(val data: T, val message: String? = null) : ResponseStates<T>()
+    data class Error(val message: String) : ResponseStates<Nothing>()
+    object Loading : ResponseStates<Nothing>()
+}
+
 

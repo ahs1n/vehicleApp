@@ -1,9 +1,8 @@
 package com.example.vehicleapp.base.factory
 
-import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.vehicleapp.MainApp
 import com.example.vehicleapp.base.repository.GeneralRepository
 import com.example.vehicleapp.base.viewmodel.AttendanceViewModel
 import com.example.vehicleapp.base.viewmodel.LoginViewModel
@@ -13,7 +12,6 @@ import com.example.vehicleapp.base.viewmodel.attendance_usecases.UpdateAttendanc
 import com.example.vehicleapp.base.viewmodel.login_usecases.LoginUseCaseLocal
 import com.example.vehicleapp.base.viewmodel.login_usecases.UserUseCase
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.*
-import com.example.vehicleapp.utils.CONSTANTS
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,17 +20,12 @@ import javax.inject.Singleton
  */
 @Singleton
 @Suppress("UNCHECKED_CAST")
-class ViewModelFactory @Inject constructor(private val repository: GeneralRepository) :
+class ViewModelFactory @Inject constructor(
+    private val repository: GeneralRepository,
+    private val sharedPreferences: SharedPreferences) :
     ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        var _location_id = MainApp.applicationContext().getSharedPreferences(
-            MainApp.applicationContext().applicationContext.packageName,
-            Context.MODE_PRIVATE
-        ).getString(CONSTANTS.USER_LOCATION, "")
-        var location_id = ""
-        if (_location_id != null)
-            location_id = _location_id
         return when {
             modelClass.isAssignableFrom(LoginViewModel::class.java) -> LoginViewModel(
                 LoginUseCaseLocal(repository),
@@ -44,7 +37,7 @@ class ViewModelFactory @Inject constructor(private val repository: GeneralReposi
                 SearchVehicleUseCaseLocal(repository),
                 GetAllAttendanceUseCaseLocal(repository),
                 UploadAttendanceUseCaseRemote(repository),
-                location_id
+                sharedPreferences
             ) as T
             modelClass.isAssignableFrom(AttendanceViewModel::class.java) -> AttendanceViewModel(
                 InsertAttendanceFormUseCase(repository),

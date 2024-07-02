@@ -14,21 +14,27 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.vehicleapp.MainApp
 import com.example.vehicleapp.R
 import com.example.vehicleapp.base.ActivityBase
+import com.example.vehicleapp.base.repository.ResponseStates
 import com.example.vehicleapp.base.repository.ResponseStatus.*
 import com.example.vehicleapp.base.viewmodel.LoginViewModel
 import com.example.vehicleapp.databinding.ActivityLoginBinding
 import com.example.vehicleapp.di.shared.SharedStorage
 import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.ui.login_activity.login_view.LoginUISource
+import com.example.vehicleapp.utils.AlertDialogFragment
 import com.example.vehicleapp.utils.CONSTANTS.IS_SAME_USER
+import com.example.vehicleapp.utils.CallBack
 import com.example.vehicleapp.utils.CustomProgressDialog
 import com.example.vehicleapp.utils.gotoActivity
+import com.example.vehicleapp.utils.gotoActivityWithNoBackUp
 import com.example.vehicleapp.utils.isNetworkConnected
 import com.example.vehicleapp.utils.obtainViewModel
+import com.example.vehicleapp.utils.showSnackBar
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -67,7 +73,7 @@ class LoginActivity : ActivityBase(), LoginUISource {
         * otherwise approve it
         *
         * */
-        viewModel.loginResponse.observe(this, {
+        viewModel.loginResponse.observe(this) {
             when (it.status) {
                 SUCCESS -> {
                     approval = true
@@ -79,25 +85,21 @@ class LoginActivity : ActivityBase(), LoginUISource {
                     }
                     gotoActivity(MainActivity::class.java)
                 }
+
                 ERROR -> {
                     setPasswordIncorrect()
                     showProgress(false)
                 }
+
                 LOADING -> {
                     lifecycleScope.launch {
                         delay(1000)
                     }
                 }
             }
-        })
+        }
 
-        viewModel.apiDownloadingDataProgress.observe(this, {
-            if (it) {
-                CustomProgressDialog.show(this, getString(R.string.downloadin_data))
-            } else {
-                CustomProgressDialog.dismiss()
-            }
-        })
+        setObservers()
     }
 
     /*
@@ -133,25 +135,25 @@ class LoginActivity : ActivityBase(), LoginUISource {
 //        if (!permissionFlag)
 //            checkPermissions()
 //        else {
-            // Store values at the time of the login attempt.
-            val username = bi.username.text.toString()
-            val password = bi.password.text.toString()
-            showProgress(true)
-            lifecycleScope.launch {
-                delay(1000)
-                if (!formValidation(username, password)) {
-                    this.cancel()
-                    showProgress(false)
-                }
-                val job = launch {
-                    isLoginApproved(username, password)
-                }
-                job.join()
-                if (approval) {
-                    showProgress(false)
-                    gotoActivity(MainActivity::class.java)
-                }
+        // Store values at the time of the login attempt.
+        val username = bi.username.text.toString()
+        val password = bi.password.text.toString()
+        showProgress(true)
+        lifecycleScope.launch {
+            delay(1000)
+            if (!formValidation(username, password)) {
+                this.cancel()
+                showProgress(false)
             }
+            val job = launch {
+                isLoginApproved(username, password)
+            }
+            job.join()
+            if (approval) {
+                showProgress(false)
+                gotoActivity(MainActivity::class.java)
+            }
+        }
 
 //        }
     }
@@ -268,6 +270,47 @@ class LoginActivity : ActivityBase(), LoginUISource {
          })*/
     }
 
+    /*
+    * Set Observers
+    * */
+    private fun setObservers() {
+        lifecycleScope.launch {
+            launch {
+                viewModel.downloadUserData
+                    .flowWithLifecycle(lifecycle)
+                    .collect {
+                        when (it) {
+                            is ResponseStates.Error -> {
+                                showProgressDialog(false)
+                                bi.root.showSnackBar(it.message, getString(R.string.ok))
+                            }
+
+                            ResponseStates.Loading -> {
+                                showProgressDialog(true)
+                            }
+
+                            is ResponseStates.Success -> {
+                                showProgressDialog(false)
+                                bi.root.showSnackBar(getString(R.string.data_is_downloaded))
+                            }
+                        }
+                    }
+            }
+
+        }
+    }
+
+    /*
+    * Progress dialog show
+    * */
+    private fun showProgressDialog(flag: Boolean) {
+        if (flag) {
+            CustomProgressDialog.show(this, getString(R.string.downloadin_data))
+        } else {
+            CustomProgressDialog.dismiss()
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -282,9 +325,12 @@ class LoginActivity : ActivityBase(), LoginUISource {
         }
     }
 
-    companion object{
+    companion object {
         val deviceId: String = try {
-            Settings.Secure.getString(MainApp.applicationContext().contentResolver, Settings.Secure.ANDROID_ID)
+            Settings.Secure.getString(
+                MainApp.applicationContext().contentResolver,
+                Settings.Secure.ANDROID_ID
+            )
         } catch (e: Exception) {
             // Handle the exception, log it, or use a default value
             "UnknownDeviceID"

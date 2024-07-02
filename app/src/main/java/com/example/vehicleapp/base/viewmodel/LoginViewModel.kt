@@ -4,18 +4,24 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vehicleapp.base.repository.ResponseStates
 import com.example.vehicleapp.base.repository.ResponseStatusCallbacks
 import com.example.vehicleapp.base.repository.ResultCallBack
 import com.example.vehicleapp.base.viewmodel.login_usecases.LoginUseCaseLocal
 import com.example.vehicleapp.base.viewmodel.login_usecases.UserUseCase
 import com.example.vehicleapp.model.UsersItem
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.StringUtils
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
     val loginUseCaseLocal: LoginUseCaseLocal,
     val userUseCase: UserUseCase
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val TAG = LoginViewModel::class.java.simpleName
 
@@ -25,7 +31,9 @@ class LoginViewModel @Inject constructor(
     val loginResponse: MutableLiveData<ResponseStatusCallbacks<UsersItem>>
         get() = _loginResponse
 
-    val apiDownloadingDataProgress = MutableLiveData<Boolean>().apply { value = false }
+    private val _downloadUserData = MutableSharedFlow<ResponseStates<Any>>()
+    val downloadUserData: SharedFlow<ResponseStates<Any>>
+        get() = _downloadUserData
 
     fun getLoginInfoFromDB(username: String, password: String) {
         _loginResponse.value = ResponseStatusCallbacks.loading(null)
@@ -45,28 +53,24 @@ class LoginViewModel @Inject constructor(
     * downloading vehicles data and register exception for exception handelling
     * */
     fun downloadingUsers() {
-        apiDownloadingDataProgress(true)
         viewModelScope.launch {
-            userUseCase.invoke().let {data ->
-                when(data){
+            _downloadUserData.emit(ResponseStates.Loading)
+            userUseCase.invoke().let { data ->
+                when (data) {
                     is ResultCallBack.CallException -> {
-                        apiDownloadingDataProgress(false)
-                        Log.e(TAG, data.exception.message.toString() )
+                        _downloadUserData.emit(ResponseStates.Error(message = data.exception.message.toString()))
                     }
+
                     is ResultCallBack.Error -> {
-                        apiDownloadingDataProgress(false)
-                        Log.e(TAG, data.error )
+                        _downloadUserData.emit(ResponseStates.Error(message = data.error))
                     }
+
                     is ResultCallBack.Success -> {
-                        apiDownloadingDataProgress(false)
+                        _downloadUserData.emit(ResponseStates.Success(data = StringUtils.EMPTY))
                     }
                 }
             }
         }
-    }
-
-    private fun apiDownloadingDataProgress(flag: Boolean) {
-        apiDownloadingDataProgress.value = flag
     }
 
 }

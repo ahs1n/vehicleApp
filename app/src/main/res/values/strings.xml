@@ -29,5 +29,6 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="sign_in">Sign in</string>
-    <string name="do_you_want_to_download_data">Do you want to download data?</string>
+    <string name="do_you_want_to_download_data">Download user data</string>
+    <string name="data_is_downloaded">Data has been downloaded</string>
 </resources>

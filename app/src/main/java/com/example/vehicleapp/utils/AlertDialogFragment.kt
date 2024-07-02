@@ -10,18 +10,30 @@ import com.example.vehicleapp.R
 /**
  * @author AliAzazAlam on 6/14/2021.
  */
-class AlertDialogFragment(val title: String, val callBack: CallBack) : DialogFragment() {
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-        AlertDialog.Builder(requireContext())
+class AlertDialogFragment(
+    val title: String,
+    val positiveBtnTxt: String?,
+    val negativeBtnTxt: String?,
+    val callBack: CallBack?
+) : DialogFragment() {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val alertDialog = AlertDialog.Builder(requireContext())
             .setMessage(title)
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                callBack.actionYes()
+
+        if (!positiveBtnTxt.isNullOrEmpty())
+            alertDialog.setPositiveButton(positiveBtnTxt) { _, _ ->
+                callBack?.actionYes()
                 dismiss()
             }
-            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
-                callBack.actionNo()
+
+        if (!negativeBtnTxt.isNullOrEmpty())
+            alertDialog.setNegativeButton(negativeBtnTxt) { _, _ ->
+                callBack?.actionNo()
+                dismiss()
             }
-            .create()
+
+        return alertDialog.create()
+    }
 
     override fun onStart() {
         super.onStart()

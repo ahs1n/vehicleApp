@@ -1,5 +1,6 @@
 package com.example.vehicleapp.base.viewmodel
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.example.vehicleapp.base.repository.ResultCallBack
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.*
 import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
+import com.example.vehicleapp.utils.CONSTANTS
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 import javax.inject.Inject
@@ -22,10 +24,11 @@ class VehicleViewModel @Inject constructor(
     private val searchVehicleUseCaseLocal: SearchVehicleUseCaseLocal,
     private val getAllAttendanceUseCaseLocal: GetAllAttendanceUseCaseLocal,
     private val uploadAttendanceUseCaseRemote: UploadAttendanceUseCaseRemote,
-    private var location_id: String
+    private var sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
     private val TAG = VehicleViewModel::class.java.simpleName
+    private var location_id = StringUtils.EMPTY
 
     private val _vehicleList: MutableLiveData<ResponseStatusCallbacks<List<VehicleAttendance>>> =
         MutableLiveData()
@@ -46,6 +49,13 @@ class VehicleViewModel @Inject constructor(
     private var searchVehicle = StringUtils.EMPTY
 
     init {
+        location_id = sharedPreferences.getString(
+            CONSTANTS.USER_LOCATION,
+            StringUtils.EMPTY
+        ) ?: StringUtils.EMPTY
+    }
+
+    init {
         fetchVehiclesFromLocalDB(location_id)
     }
 
@@ -61,10 +71,12 @@ class VehicleViewModel @Inject constructor(
                         apiDownloadingDataProgress(false)
                         Log.e(TAG, data.exception.message.toString())
                     }
+
                     is ResultCallBack.Error -> {
                         apiDownloadingDataProgress(false)
                         Log.e(TAG, data.error)
                     }
+
                     is ResultCallBack.Success -> {
                         apiDownloadingDataProgress(false)
                     }
@@ -186,11 +198,13 @@ class VehicleViewModel @Inject constructor(
                                 Log.e(TAG, data.exception.message.toString())
                                 responseUpload.value = data.exception.message.toString()
                             }
+
                             is ResultCallBack.Error -> {
                                 apiDownloadingDataProgress(false)
                                 Log.e(TAG, data.error)
                                 responseUpload.value = data.error
                             }
+
                             is ResultCallBack.Success -> {
                                 apiDownloadingDataProgress(false)
                                 responseUpload.value =

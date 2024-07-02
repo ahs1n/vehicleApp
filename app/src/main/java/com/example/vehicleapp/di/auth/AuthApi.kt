@@ -6,6 +6,7 @@ import com.example.vehicleapp.model.response.ServerUploadReturn
 import com.example.vehicleapp.model.utils.Users
 import com.example.vehicleapp.model.utils.Vehicles
 import com.example.vehicleapp.utils.CONSTANTS
+import org.apache.commons.lang3.StringUtils
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -22,7 +23,7 @@ interface AuthApi {
         @Query("where") where: String
     ): ApiResponse<Vehicles>
 
-    @GET(ApiRoutes.GET_DATA + CONSTANTS.USER_TABLE)
+    @GET(ApiRoutes.GET_DATA + "/" + CONSTANTS.USER_TABLE)
     suspend fun getUserServerData(): ApiResponse<Users>
 
     @POST(ApiRoutes.UPLOAD_DATA)

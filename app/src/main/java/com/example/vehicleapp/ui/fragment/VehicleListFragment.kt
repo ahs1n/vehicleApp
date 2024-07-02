@@ -255,6 +255,8 @@ class VehicleListFragment : FragmentBase() {
             R.id.logout_menu -> {
                 AlertDialogFragment(
                     title = getString(R.string.logout_message),
+                    positiveBtnTxt = getString(R.string.ok),
+                    negativeBtnTxt = getString(R.string.cancel),
                     callBack = object : CallBack {
                         override fun actionYes() {
                             SharedStorage.setLogOutUser(sharedPrefImpl)

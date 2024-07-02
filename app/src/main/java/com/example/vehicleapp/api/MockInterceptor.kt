@@ -14,6 +14,7 @@ class MockInterceptor : Interceptor {
         if(BuildConfig.FLAVOR == "dev" && BuildConfig.BUILD_TYPE == "debug"){
             val uri = chain.request().url.toUri().toString()
             val responseString = when {
+                uri.contains("api/users") -> userResponse
                 uri.contains("api?table=view_vehicles") -> vehicleResponse
                 else -> ""
             }
@@ -37,6 +38,39 @@ class MockInterceptor : Interceptor {
         }
     }
 }
+
+const val userResponse = """
+[
+    {
+        "id": "1",
+        "username": "test1234",
+        "password": "test1234",
+        "full_name": "Ali",
+        "location": "1"
+    },
+    {
+        "id": "2",
+        "username": "test4321",
+        "password": "test4321",
+        "full_name": "Wasim",
+        "location": "1"
+    },
+    {
+        "id": "3",
+        "username": "sameer",
+        "password": "abcd1234",
+        "full_name": "Sameer Hanif",
+        "location": "1"
+    },
+    {
+        "id": "4",
+        "username": "sheeraz",
+        "password": "abcd1234",
+        "full_name": "Sheeraz Ali Nawaz",
+        "location": "4"
+    }
+]
+"""
 
 const val vehicleResponse= """
 [
