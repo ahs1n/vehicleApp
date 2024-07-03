@@ -1,8 +1,11 @@
 package com.example.vehicleapp.adapters
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vehicleapp.R
+import com.example.vehicleapp.databinding.ItemVehicleLayoutBinding
 import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
@@ -25,10 +28,10 @@ class VehicleListAdapter(private val clickListener: GenericListeners) :
             val diffCallback =
                 VehicleViewHolder.ChildViewDiffUtils(filteredVehicleItems, vehicleItems)
             val diffResult = DiffUtil.calculateDiff(diffCallback)
-            if (filteredVehicleItems.size > 0)
+            diffResult.dispatchUpdatesTo(this)
+            if (filteredVehicleItems.isNotEmpty())
                 filteredVehicleItems.clear()
             filteredVehicleItems.addAll(value)
-            diffResult.dispatchUpdatesTo(this)
         }
 
     private var filteredVehicleItems: ArrayList<VehicleAttendance> = ArrayList()
@@ -45,7 +48,10 @@ class VehicleListAdapter(private val clickListener: GenericListeners) :
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): VehicleViewHolder {
-        return VehicleViewHolder.create(viewGroup)
+        val view = LayoutInflater.from(viewGroup.context)
+            .inflate(R.layout.item_vehicle_layout, viewGroup, false)
+        val binding = ItemVehicleLayoutBinding.bind(view)
+        return VehicleViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: VehicleViewHolder, i: Int) {

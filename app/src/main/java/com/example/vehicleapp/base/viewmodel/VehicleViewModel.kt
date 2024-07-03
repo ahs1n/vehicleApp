@@ -44,11 +44,6 @@ class VehicleViewModel @Inject constructor(
     val locationId =
         sharedPreferences.getString(CONSTANTS.USER_LOCATION, StringUtils.EMPTY) ?: StringUtils.EMPTY
 
-    private val _vehicleList: MutableLiveData<ResponseStatusCallbacks<List<VehicleAttendance>>> =
-        MutableLiveData()
-    val vehiclesResponse: MutableLiveData<ResponseStatusCallbacks<List<VehicleAttendance>>>
-        get() = _vehicleList
-
     private val _vehicleListDB = MutableSharedFlow<ResponseStates<ArrayList<VehicleAttendance>?>>()
     val vehicleListDB: SharedFlow<ResponseStates<ArrayList<VehicleAttendance>?>>
         get() = _vehicleListDB
@@ -120,23 +115,6 @@ class VehicleViewModel @Inject constructor(
     }
 
     /*
-    * Send data to detail page
-    * */
-    fun setSelectedVehicle(singleImages: VehiclesItem) {
-        _selectedVehicle.value = ResponseStatusCallbacks.loading(null)
-        viewModelScope.launch {
-            try {
-                _selectedVehicle.value = ResponseStatusCallbacks.success(
-                    data = singleImages,
-                    "Vehicle received"
-                )
-            } catch (e: Exception) {
-                _vehicleList.value = ResponseStatusCallbacks.error(null, e.message.toString())
-            }
-        }
-    }
-
-    /*
     * Retry connection if internet is not available
     * */
     fun retryConnection() {
@@ -161,25 +139,29 @@ class VehicleViewModel @Inject constructor(
     /*
     * Query to fetch vehicles from server
     * */
-    private fun fetchSearchVehiclesFromLocalDB(search: String, location_id: String) {
-        _vehicleList.value = ResponseStatusCallbacks.loading(data = null)
+    private fun fetchSearchVehiclesFromLocalDB(search: String, locationId: String) {
         viewModelScope.launch {
+            _vehicleListDB.emit(ResponseStates.Loading)
             try {
-                searchVehicleUseCaseLocal(vehicleNo = "%$search%", location_id).collect { dataset ->
-                    if (dataset.isNullOrEmpty())
-                        _vehicleList.value = ResponseStatusCallbacks.error(
-                            data = null,
-                            "Sorry no vehicle found"
+                searchVehicleUseCaseLocal(
+                    vehicleNo = "%$search%",
+                    locationId
+                ).collectLatest { dataset ->
+                    if (dataset.isEmpty())
+                        _vehicleListDB.emit(
+                            ResponseStates.Success(
+                                data = null,
+                                message = context.getString(R.string.empty_vehicle_message)
+                            )
                         )
-                    else
-                        _vehicleList.value = ResponseStatusCallbacks.success(
-                            data = dataset,
-                            "Vehicles received"
-                        )
+                    else {
+                        val sortedVehiclesList = dataset as ArrayList
+                        sortedVehiclesList.sortByDescending { it.attendance?.let { item -> item.meter_in != null && item.meter_out == null } }
+                        _vehicleListDB.emit(ResponseStates.Success(sortedVehiclesList))
+                    }
                 }
-
             } catch (e: Exception) {
-                _vehicleList.value = ResponseStatusCallbacks.error(null, e.message.toString())
+                _vehicleListDB.emit(ResponseStates.Error(e.message.toString()))
             }
         }
     }

@@ -31,16 +31,6 @@ class VehicleViewHolder(private val bi: ItemVehicleLayoutBinding) :
         }
     }
 
-
-    companion object {
-        fun create(viewGroup: ViewGroup): VehicleViewHolder {
-            val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.item_vehicle_layout, viewGroup, false)
-            val binding = ItemVehicleLayoutBinding.bind(view)
-            return VehicleViewHolder(binding)
-        }
-    }
-
     class ChildViewDiffUtils(
         private val oldList: ArrayList<VehicleAttendance>,
         private val newList: ArrayList<VehicleAttendance>

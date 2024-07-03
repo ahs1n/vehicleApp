@@ -104,11 +104,7 @@ class VehicleListFragment : FragmentBase() {
         viewModel.fetchVehiclesFromLocalDB(viewModel.locationId)
 
         viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner) {
-            if (it) {
-                CustomProgressDialog.show(requireContext(), getString(R.string.processing_data))
-            } else {
-                CustomProgressDialog.dismiss()
-            }
+            showProgressDialog(it)
         }
 
         viewModel.responseUpload.observe(viewLifecycleOwner) {
