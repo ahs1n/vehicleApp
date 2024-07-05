@@ -10,6 +10,7 @@ import com.example.vehicleapp.base.repository.ResultCallBack
 import com.example.vehicleapp.base.viewmodel.login_usecases.LoginUseCaseLocal
 import com.example.vehicleapp.base.viewmodel.login_usecases.UserUseCase
 import com.example.vehicleapp.model.UsersItem
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 import javax.inject.Inject
 
+@HiltViewModel
 class LoginViewModel @Inject constructor(
     val loginUseCaseLocal: LoginUseCaseLocal,
     val userUseCase: UserUseCase

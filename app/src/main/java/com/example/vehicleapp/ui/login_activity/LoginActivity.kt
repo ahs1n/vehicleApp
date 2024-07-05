@@ -6,17 +6,16 @@ import android.animation.AnimatorListenerAdapter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.text.TextUtils
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.example.vehicleapp.MainApp
 import com.example.vehicleapp.R
 import com.example.vehicleapp.base.ActivityBase
 import com.example.vehicleapp.base.repository.ResponseStates
@@ -25,39 +24,49 @@ import com.example.vehicleapp.base.repository.ResponseStatus.LOADING
 import com.example.vehicleapp.base.repository.ResponseStatus.SUCCESS
 import com.example.vehicleapp.base.viewmodel.LoginViewModel
 import com.example.vehicleapp.databinding.ActivityLoginBinding
-import com.example.vehicleapp.di.shared.SharedStorage
+import com.example.vehicleapp.di.shared.DefaultPreferenceManager
 import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.ui.login_activity.login_view.LoginUISource
+import com.example.vehicleapp.utils.CONSTANTS
 import com.example.vehicleapp.utils.CONSTANTS.IS_SAME_USER
 import com.example.vehicleapp.utils.CustomProgressDialog
 import com.example.vehicleapp.utils.gotoActivityWithNoBackUp
 import com.example.vehicleapp.utils.isNetworkConnected
-import com.example.vehicleapp.utils.obtainViewModel
 import com.example.vehicleapp.utils.showSnackBar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.StringUtils
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class LoginActivity : ActivityBase(), LoginUISource {
 
+    private val viewModel: LoginViewModel by viewModels()
+
     lateinit var bi: ActivityLoginBinding
-    lateinit var viewModel: LoginViewModel
     var permissionFlag = true
     var approval = false
     var requestCode = 101
+
+
+    /*
+    * Inject
+    * */
+    @Inject
+    lateinit var sharedPref: DefaultPreferenceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bi = DataBindingUtil.setContentView(this, R.layout.activity_login)
         bi.callback = this
 //        bi.txtinstalldate.text = MainApp.appInfo.getAppInfo()
-        viewModel = obtainViewModel(LoginViewModel::class.java, viewModelFactory)
 
         /*
         * Check if the user is already exist
         * */
-        if (SharedStorage.getLogFlag(sharedPrefImpl)) {
+        if (sharedPref.get(CONSTANTS.LOGIN_FLAG, false) == true) {
             finish()
             gotoActivityWithNoBackUp<MainActivity>()
         }
@@ -77,10 +86,13 @@ class LoginActivity : ActivityBase(), LoginUISource {
                 SUCCESS -> {
                     approval = true
                     it.data?.let { user ->
-                        if (user.username.equals(SharedStorage.getLogInUserName(sharedPrefImpl)))
+                        if (user.username ==
+                            sharedPref.get(CONSTANTS.LOGIN_USERNAME, StringUtils.EMPTY)
+                        )
                             IS_SAME_USER = true
-                        SharedStorage.setLogInUserName(sharedPrefImpl, user.username)
-                        SharedStorage.setUserLocation(sharedPrefImpl, user.location)
+                        sharedPref.put(CONSTANTS.LOGIN_USERNAME, user.username)
+                        sharedPref.put(CONSTANTS.USER_LOCATION, user.location)
+                        sharedPref.put(CONSTANTS.LOGIN_FLAG, true)
                     }
                     finish()
                     gotoActivityWithNoBackUp<MainActivity>()
@@ -221,7 +233,7 @@ class LoginActivity : ActivityBase(), LoginUISource {
         if (
             username == "test1234" && password == "test1234"
         ) {
-            SharedStorage.setLogInUserName(sharedPrefImpl, "test_user")
+            sharedPref.put(CONSTANTS.LOGIN_USERNAME, "test_user")
             approval = true
         } else
             viewModel.getLoginInfoFromDB(username, password)
@@ -325,17 +337,4 @@ class LoginActivity : ActivityBase(), LoginUISource {
             }
         }
     }
-
-    companion object {
-        val deviceId: String = try {
-            Settings.Secure.getString(
-                MainApp.applicationContext().contentResolver,
-                Settings.Secure.ANDROID_ID
-            )
-        } catch (e: Exception) {
-            // Handle the exception, log it, or use a default value
-            "UnknownDeviceID"
-        }
-    }
-
 }

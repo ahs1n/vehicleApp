@@ -7,6 +7,7 @@ import com.example.vehicleapp.base.repository.ResultCallBack
 import com.example.vehicleapp.base.viewmodel.attendance_usecases.InsertAttendanceFormUseCase
 import com.example.vehicleapp.base.viewmodel.attendance_usecases.UpdateAttendanceFormUseCase
 import com.example.vehicleapp.model.Attendance
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,6 +15,7 @@ import javax.inject.Inject
 /**
  * @author AliAzazAlam on 6/23/2021.
  */
+@HiltViewModel
 class AttendanceViewModel @Inject constructor(
     private val insertAttendanceFormUseCase: InsertAttendanceFormUseCase,
     private val updateAttendanceFormUseCase: UpdateAttendanceFormUseCase

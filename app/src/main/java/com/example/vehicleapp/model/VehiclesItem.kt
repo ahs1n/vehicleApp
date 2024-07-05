@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.vehicleapp.utils.CONSTANTS
 import com.google.gson.annotations.Expose
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(tableName = CONSTANTS.VEHICLE_TABLE)

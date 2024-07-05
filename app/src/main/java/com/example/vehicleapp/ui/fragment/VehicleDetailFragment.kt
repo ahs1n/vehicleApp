@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.library.baseAdapters.BR
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.vehicleapp.MainApp
 import com.example.vehicleapp.R
@@ -14,23 +15,28 @@ import com.example.vehicleapp.base.FragmentBase
 import com.example.vehicleapp.base.repository.ResultCallBack
 import com.example.vehicleapp.base.viewmodel.AttendanceViewModel
 import com.example.vehicleapp.databinding.FragmentVehicleDetailBinding
-import com.example.vehicleapp.di.shared.SharedStorage
+import com.example.vehicleapp.di.shared.DefaultPreferenceManager
 import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.ui.MainActivity
 import com.example.vehicleapp.ui.login_activity.LoginActivity
+import com.example.vehicleapp.utils.CONSTANTS
 import com.example.vehicleapp.utils.CustomProgressDialog
-import com.example.vehicleapp.utils.obtainViewModel
+import com.example.vehicleapp.utils.deviceId
+import com.example.vehicleapp.utils.generateUid
 import com.example.vehicleapp.utils.showSnackBar
 import com.example.vehicleapp.utils.toastUtil
 import com.validatorcrawler.aliazaz.Validator
+import dagger.hilt.android.AndroidEntryPoint
+import org.apache.commons.lang3.StringUtils
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class VehicleDetailFragment : FragmentBase() {
 
-    lateinit var viewModel: AttendanceViewModel
+    private val viewModel: AttendanceViewModel by activityViewModels()
     lateinit var bi: FragmentVehicleDetailBinding
 
     private val vehicleRecord: VehiclesItem by lazy {
@@ -41,6 +47,12 @@ class VehicleDetailFragment : FragmentBase() {
         arguments?.get("attendanceVehicle")?.let { it as Attendance }
     }
     private lateinit var form: Attendance
+
+    /*
+    * Inject
+    * */
+    @Inject
+    lateinit var sharedPref: DefaultPreferenceManager
 
     @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,10 +68,10 @@ class VehicleDetailFragment : FragmentBase() {
                     activity?.contentResolver,
                     Settings.Secure.ANDROID_ID
                 ),*/
-                deviceID = LoginActivity.deviceId,
+                deviceID = requireContext().deviceId(),
 
-                user = SharedStorage.getLogInUserName(sharedPrefImpl),
-                _uid = MainApp.generateUid()
+                user = sharedPref.get(CONSTANTS.LOGIN_FLAG,StringUtils.EMPTY).toString(),
+                _uid = generateUid(requireContext().deviceId())
             )
         }
 
@@ -101,18 +113,9 @@ class VehicleDetailFragment : FragmentBase() {
         super.onActivityCreated(savedInstanceState)
 
         /*
-        * Obtaining ViewModel
-        * */
-        viewModel = obtainViewModel(
-            this,
-            AttendanceViewModel::class.java,
-            viewModelFactory
-        )
-
-        /*
         * Alert start progress
         * */
-        viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner, {
+        viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner) {
             if (it) {
                 CustomProgressDialog.show(
                     activity as MainActivity,
@@ -121,12 +124,12 @@ class VehicleDetailFragment : FragmentBase() {
             } else {
                 CustomProgressDialog.dismiss()
             }
-        })
+        }
 
         /*
         * Observe data inserted and updated
         * */
-        viewModel.attendanceForm.observe(viewLifecycleOwner, {
+        viewModel.attendanceForm.observe(viewLifecycleOwner) {
             when (it) {
                 is ResultCallBack.CallException -> {
                     bi.clAttendenceForm.showSnackBar(
@@ -135,13 +138,15 @@ class VehicleDetailFragment : FragmentBase() {
                         actionListener = {}
                     )
                 }
+
                 is ResultCallBack.Success -> {
-                    "Attendance recorded successfully".toastUtil().show()
+                    context?.toastUtil("Attendance recorded successfully")?.show()
                     findNavController().popBackStack()
                 }
+
                 is ResultCallBack.Error -> TODO()
             }
-        })
+        }
 
     }
 
@@ -153,7 +158,7 @@ class VehicleDetailFragment : FragmentBase() {
         if (!Validator.emptyCheckingContainer(requireContext(), bi.clAttendenceForm)) return
 
         if (!this::form.isInitialized) {
-            "App cannot work please coordinate with IT team".toastUtil().show()
+            context?.toastUtil("App cannot work please coordinate with IT team")?.show()
             return
         }
 

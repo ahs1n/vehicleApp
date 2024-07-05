@@ -1,20 +1,22 @@
 package com.example.vehicleapp.di.shared
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import com.example.vehicleapp.MainApp
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /*
 * @author Mustufa.Ansari
 * @update Ali.Azaz
 * */
-@Singleton
-class SharedStorageBase @Inject constructor(private val mSharedPreferences: SharedPreferences) {
 
-    fun put(key: String?, objectValue: Any?) {
+interface PrefManager {
+    fun put(key: String?, objectValue: Any?)
+    fun <T> get(key: String?, defaultObject: T?): T?
+}
+
+class DefaultPreferenceManager @Inject constructor(private val mSharedPreferences: SharedPreferences) :
+    PrefManager {
+
+    override fun put(key: String?, objectValue: Any?) {
         val editor = mSharedPreferences.edit()
         when (objectValue) {
             is String -> editor.putString(key, objectValue)
@@ -27,8 +29,8 @@ class SharedStorageBase @Inject constructor(private val mSharedPreferences: Shar
         editor.apply()
     }
 
-    operator fun get(key: String?, defaultObject: Any?): Any? {
-        return when (defaultObject) {
+    override operator fun <T> get(key: String?, defaultObject: T?): T? {
+        val item = when (defaultObject) {
             is String -> mSharedPreferences.getString(key, defaultObject)
             is Int -> mSharedPreferences.getInt(key, defaultObject)
             is Long -> mSharedPreferences.getLong(key, defaultObject)
@@ -36,6 +38,8 @@ class SharedStorageBase @Inject constructor(private val mSharedPreferences: Shar
             is Float -> mSharedPreferences.getFloat(key, defaultObject)
             else -> null
         }
+
+        return item as T
     }
 
 }

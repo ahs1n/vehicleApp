@@ -12,8 +12,7 @@
         tools:layout="@layout/fragment_vehicle_list">
         <action
             android:id="@+id/action_vehicleListFragment_to_vehicleDetailFragment"
-            app:destination="@id/vehicleDetailFragment"
-            app:launchSingleTop="true" />
+            app:destination="@id/vehicleDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/vehicleDetailFragment"
@@ -24,7 +23,6 @@
             app:argType="com.example.vehicleapp.model.VehiclesItem" />
         <argument
             android:name="attendanceVehicle"
-            android:defaultValue="@null"
             app:argType="com.example.vehicleapp.model.Attendance"
             app:nullable="true" />
     </fragment>

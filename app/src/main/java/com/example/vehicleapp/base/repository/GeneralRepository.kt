@@ -18,6 +18,7 @@ import com.example.vehicleapp.model.utils.Users
 import com.example.vehicleapp.model.utils.Vehicles
 import com.example.vehicleapp.utils.CONSTANTS
 import com.example.vehicleapp.utils.CONSTANTS.USER_LOCATION
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -58,10 +59,7 @@ class GeneralRepository @Inject constructor(
         var result: ResultCallBack<Vehicles>? = null
         apiService.getVehicleServerData(
             CONSTANTS.VEHICLE_TABLE,
-            "location_id=" + MainApp.applicationContext().getSharedPreferences(
-                MainApp.applicationContext().applicationContext.packageName,
-                Context.MODE_PRIVATE
-            ).getString(USER_LOCATION, "")
+            "location_id=$location_id"
         ).apply {
             this.onSuccessSuspend {
                 result = data?.let {

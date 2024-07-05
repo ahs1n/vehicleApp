@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.provider.Settings
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -116,8 +117,17 @@ fun isNetworkConnected(context: Context): Boolean {
     return result
 }
 
-fun String.toastUtil(): Toast {
-    return Toast.makeText(MainApp.applicationContext(), this, Toast.LENGTH_LONG)
+fun Context.toastUtil(message: String): Toast {
+    return Toast.makeText(this, message, Toast.LENGTH_LONG)
+}
+
+fun Context.deviceId() = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+
+fun generateUid(deviceId: String): String {
+    // Uid Scheme = 6 characters of device id + current date time in millis
+    val deviceIdSS: String = deviceId.substring(0, 6)
+    val timeInMillis = System.currentTimeMillis()
+    return String.format(Locale.getDefault(), "%s%d", deviceIdSS, timeInMillis)
 }
 
 /*

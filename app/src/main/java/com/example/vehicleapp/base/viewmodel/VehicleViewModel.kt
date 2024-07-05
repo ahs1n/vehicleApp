@@ -15,9 +15,12 @@ import com.example.vehicleapp.base.viewmodel.vehicle_usecases.SearchVehicleUseCa
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.UploadAttendanceUseCaseRemote
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseLocal
 import com.example.vehicleapp.base.viewmodel.vehicle_usecases.VehicleUseCaseRemote
+import com.example.vehicleapp.di.shared.PrefManager
 import com.example.vehicleapp.model.VehicleAttendance
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.utils.CONSTANTS
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -28,21 +31,22 @@ import javax.inject.Inject
 /**
  * @author AliAzazAlam on 5/4/2021.
  */
+@HiltViewModel
 class VehicleViewModel @Inject constructor(
     private val vehicleUseCaseRemote: VehicleUseCaseRemote,
     private val vehicleUseCaseLocal: VehicleUseCaseLocal,
     private val searchVehicleUseCaseLocal: SearchVehicleUseCaseLocal,
     private val getAllAttendanceUseCaseLocal: GetAllAttendanceUseCaseLocal,
     private val uploadAttendanceUseCaseRemote: UploadAttendanceUseCaseRemote,
-    sharedPreferences: SharedPreferences,
-    private val context: Context
+    sharedPreferences: PrefManager,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val TAG = VehicleViewModel::class.java.simpleName
     private var searchVehicle = StringUtils.EMPTY
 
     val locationId =
-        sharedPreferences.getString(CONSTANTS.USER_LOCATION, StringUtils.EMPTY) ?: StringUtils.EMPTY
+        sharedPreferences.get(CONSTANTS.USER_LOCATION, StringUtils.EMPTY) ?: StringUtils.EMPTY
 
     private val _vehicleListDB = MutableSharedFlow<ResponseStates<ArrayList<VehicleAttendance>?>>()
     val vehicleListDB: SharedFlow<ResponseStates<ArrayList<VehicleAttendance>?>>
@@ -56,6 +60,10 @@ class VehicleViewModel @Inject constructor(
     val apiDownloadingDataProgress = MutableLiveData<Boolean>().apply { value = false }
 
     val responseUpload = MutableLiveData<String>().apply { value = StringUtils.EMPTY }
+
+    init {
+        fetchVehiclesFromLocalDB(locationId)
+    }
 
     /*
     * downloading vehicles data and register exception for exception handelling

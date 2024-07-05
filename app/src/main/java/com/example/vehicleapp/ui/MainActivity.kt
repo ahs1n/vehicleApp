@@ -7,10 +7,12 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.vehicleapp.R
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * @author AliAzazAlam on 5/4/2021.
  */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var navController: NavController

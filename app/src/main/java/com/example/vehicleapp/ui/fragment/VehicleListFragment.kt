@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.library.baseAdapters.BR
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -21,40 +22,40 @@ import com.example.vehicleapp.base.FragmentBase
 import com.example.vehicleapp.base.repository.ResponseStates
 import com.example.vehicleapp.base.viewmodel.VehicleViewModel
 import com.example.vehicleapp.databinding.FragmentVehicleListBinding
-import com.example.vehicleapp.di.shared.SharedStorage
+import com.example.vehicleapp.di.shared.DefaultPreferenceManager
 import com.example.vehicleapp.ui.login_activity.LoginActivity
 import com.example.vehicleapp.utils.AlertDialogFragment
+import com.example.vehicleapp.utils.CONSTANTS
 import com.example.vehicleapp.utils.CallBack
 import com.example.vehicleapp.utils.CustomProgressDialog
 import com.example.vehicleapp.utils.gotoActivityWithNoBackUp
-import com.example.vehicleapp.utils.obtainViewModel
 import com.example.vehicleapp.utils.showSnackBar
 import com.example.vehicleapp.utils.toastUtil
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 import java.util.Locale
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class VehicleListFragment : FragmentBase() {
 
     lateinit var bi: FragmentVehicleListBinding
 
     private var adapter: VehicleListAdapter? = null
-    lateinit var viewModel: VehicleViewModel
+    private val viewModel: VehicleViewModel by activityViewModels()
     private var actionBarHeight = 0
+
+    /*
+    * Inject
+    * */
+    @Inject
+    lateinit var sharedPref: DefaultPreferenceManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        /*
-        * Obtaining ViewModel
-        * */
-        viewModel = requireActivity().obtainViewModel(
-            VehicleViewModel::class.java,
-            viewModelFactory
-        )
 
         /*
         * Initializing databinding
@@ -101,15 +102,13 @@ class VehicleListFragment : FragmentBase() {
         callingRecyclerView()
         setObservers()
 
-        viewModel.fetchVehiclesFromLocalDB(viewModel.locationId)
-
         viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner) {
             showProgressDialog(it)
         }
 
         viewModel.responseUpload.observe(viewLifecycleOwner) {
             if (it != StringUtils.EMPTY) {
-                it.toastUtil().show()
+                context?.toastUtil(it)?.show()
                 viewModel.responseUpload.value = StringUtils.EMPTY
             }
         }
@@ -269,7 +268,7 @@ class VehicleListFragment : FragmentBase() {
                     negativeBtnTxt = getString(R.string.cancel),
                     callBack = object : CallBack {
                         override fun actionYes() {
-                            SharedStorage.setLogOutUser(sharedPrefImpl)
+                            setLogOutUser()
                             gotoActivityWithNoBackUp(LoginActivity::class.java)
                         }
 
@@ -290,5 +289,13 @@ class VehicleListFragment : FragmentBase() {
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    /*
+    * Logout message
+    * */
+    private fun setLogOutUser() {
+        sharedPref.put(CONSTANTS.LOGIN_FLAG, false)
+        sharedPref.put(CONSTANTS.LOGIN_USERNAME, StringUtils.EMPTY)
     }
 }

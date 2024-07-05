@@ -8,6 +8,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,6 +24,7 @@ import javax.inject.Singleton
  * @author AliAzazAlam on 5/4/2021.
  */
 @Module
+@InstallIn(SingletonComponent::class)
 class NetworkApiModule {
 
     @Singleton
