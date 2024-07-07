@@ -1,14 +1,13 @@
 package com.example.vehicleapp.ui.fragment
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.activityViewModels
@@ -29,6 +28,7 @@ import com.example.vehicleapp.utils.CONSTANTS
 import com.example.vehicleapp.utils.CallBack
 import com.example.vehicleapp.utils.CustomProgressDialog
 import com.example.vehicleapp.utils.gotoActivityWithNoBackUp
+import com.example.vehicleapp.utils.hideKeyboard
 import com.example.vehicleapp.utils.showSnackBar
 import com.example.vehicleapp.utils.toastUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -91,11 +91,6 @@ class VehicleListFragment : FragmentBase() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        if(IS_SAME_USER)
-//            viewModel.fetchVehiclesFromLocalDB()
-//        else
-//            bi.multiStateView.viewState = MultiStateView.ViewState.EMPTY
-
         /*
         * Initiating recyclerview
         * */
@@ -103,7 +98,11 @@ class VehicleListFragment : FragmentBase() {
         setObservers()
 
         viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner) {
-            showProgressDialog(it)
+            if (it) {
+                CustomProgressDialog.show(requireContext())
+            } else {
+                CustomProgressDialog.dismiss()
+            }
         }
 
         viewModel.responseUpload.observe(viewLifecycleOwner) {
@@ -125,32 +124,16 @@ class VehicleListFragment : FragmentBase() {
         /*
         * vehicle search
         * */
-        /*bi.edtSearchVehicle.setOnEditorActionListener { _, actionId, _ ->
+        bi.edtSearchVehicle.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 bi.edtSearchVehicle.hideKeyboard()
                 val s = bi.edtSearchVehicle.text.toString()
                 adapter?.clearVehicleItems()
-                bi.populateTxt.text = "Search: ${s.toUpperCase(Locale.ENGLISH)}"
+                bi.populateTxt.text = "Search: ${s.uppercase(Locale.ENGLISH)}"
                 viewModel.searchVehicleFromDB(s)
             }
             false
-        }*/
-        bi.edtSearchVehicle.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val query = s.toString()
-                adapter?.clearVehicleItems()
-                bi.populateTxt.text = "Search: ${query.uppercase(Locale.ENGLISH)}"
-
-                // Perform the search based on the user's input
-                viewModel.searchVehicleFromDB(query)
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-        })
+        }
 
         /*
         * vehicle search clear
@@ -175,8 +158,12 @@ class VehicleListFragment : FragmentBase() {
                 )
             )
         }
-        adapter?.stateRestorationPolicy =
-            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        adapter?.apply {
+            bi.vehicleList.setHasFixedSize(true)
+            setHasStableIds(true)
+            stateRestorationPolicy =
+                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        }
         bi.vehicleList.adapter = adapter
     }
 
@@ -201,13 +188,13 @@ class VehicleListFragment : FragmentBase() {
 
                             ResponseStates.Loading -> showProgressDialog(true)
                             is ResponseStates.Success -> {
-                                showProgressDialog(false)
-                                if (it.data.isNullOrEmpty()) {
+                                if (it.data.isEmpty()) {
                                     bi.populateTxt.text = it.message
                                 } else {
                                     bi.populateTxt.text = getString(R.string.search_latest)
                                     adapter?.vehicleItems = it.data
                                 }
+                                showProgressDialog(false)
                             }
                         }
                     }
@@ -220,11 +207,7 @@ class VehicleListFragment : FragmentBase() {
     * Progress dialog show
     * */
     private fun showProgressDialog(flag: Boolean) {
-        if (flag) {
-            CustomProgressDialog.show(requireContext(), getString(R.string.downloadin_data))
-        } else {
-            CustomProgressDialog.dismiss()
-        }
+        bi.loading.visibility = if (flag) View.VISIBLE else View.GONE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

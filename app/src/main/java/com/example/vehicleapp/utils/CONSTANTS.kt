@@ -2,8 +2,6 @@ package com.example.vehicleapp.utils
 
 object CONSTANTS {
 
-    const val mockingEnabled = true
-
     /*
     * Database
     * */

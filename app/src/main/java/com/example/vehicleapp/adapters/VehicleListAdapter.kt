@@ -6,15 +6,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vehicleapp.R
 import com.example.vehicleapp.databinding.ItemVehicleLayoutBinding
-import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.VehicleAttendance
-import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.utils.GenericListeners
 import com.example.vehicleapp.viewholder.VehicleViewHolder
-import org.apache.commons.lang3.StringUtils
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * @author AliAzazAlam on 5/4/2021.
@@ -57,7 +51,7 @@ class VehicleListAdapter(private val clickListener: GenericListeners) :
     override fun onBindViewHolder(holder: VehicleViewHolder, i: Int) {
         val item = filteredVehicleItems[i]
 
-        item.attendance?.let {
+        /*item.attendance?.let {
             if (it.meter_in != null && it.meter_out != null && it.startDate != SimpleDateFormat(
                     "dd-MM-yyyy",
                     Locale.ENGLISH
@@ -66,7 +60,7 @@ class VehicleListAdapter(private val clickListener: GenericListeners) :
                 )
             )
                 item.attendance = null
-        }
+        }*/
 
         holder.bind(item, i, clickListener)
     }

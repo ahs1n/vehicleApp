@@ -118,8 +118,8 @@ dependencies {
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
     //Ali mask
-    implementation 'com.github.AliAzaz:Edittext-Library:2.0.0'
-    implementation 'com.github.AliAzaz:AndroidValidatorCrawler:1.0.3'
+    implementation 'com.github.AliAzaz:Edittext-Library:2.1.1'
+    implementation 'com.github.AliAzaz:AndroidValidatorCrawler:2.0.0'
 
     //Date
     implementation 'com.github.BlackBoxVision:datetimepicker-edittext:v0.3.3' //date field on fragment is working in this release

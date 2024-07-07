@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.vehicleapp.MainApp
 import com.example.vehicleapp.R
 import com.example.vehicleapp.base.FragmentBase
 import com.example.vehicleapp.base.repository.ResultCallBack
@@ -19,7 +18,6 @@ import com.example.vehicleapp.di.shared.DefaultPreferenceManager
 import com.example.vehicleapp.model.Attendance
 import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.ui.MainActivity
-import com.example.vehicleapp.ui.login_activity.LoginActivity
 import com.example.vehicleapp.utils.CONSTANTS
 import com.example.vehicleapp.utils.CustomProgressDialog
 import com.example.vehicleapp.utils.deviceId
@@ -30,7 +28,8 @@ import com.validatorcrawler.aliazaz.Validator
 import dagger.hilt.android.AndroidEntryPoint
 import org.apache.commons.lang3.StringUtils
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -70,7 +69,7 @@ class VehicleDetailFragment : FragmentBase() {
                 ),*/
                 deviceID = requireContext().deviceId(),
 
-                user = sharedPref.get(CONSTANTS.LOGIN_FLAG,StringUtils.EMPTY).toString(),
+                user = sharedPref.get(CONSTANTS.LOGIN_USERNAME, StringUtils.EMPTY).toString(),
                 _uid = generateUid(requireContext().deviceId())
             )
         }
@@ -109,8 +108,8 @@ class VehicleDetailFragment : FragmentBase() {
         return bi.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         /*
         * Alert start progress
@@ -118,7 +117,7 @@ class VehicleDetailFragment : FragmentBase() {
         viewModel.apiDownloadingDataProgress.observe(viewLifecycleOwner) {
             if (it) {
                 CustomProgressDialog.show(
-                    activity as MainActivity,
+                    requireContext(),
                     getString(R.string.processing_attendance)
                 )
             } else {
@@ -144,7 +143,9 @@ class VehicleDetailFragment : FragmentBase() {
                     findNavController().popBackStack()
                 }
 
-                is ResultCallBack.Error -> TODO()
+                is ResultCallBack.Error -> {
+
+                }
             }
         }
 
@@ -153,9 +154,8 @@ class VehicleDetailFragment : FragmentBase() {
     /*
     * Clickable buttons
     * */
-    @SuppressLint("HardwareIds")
     fun timeInBtn(view: View) {
-        if (!Validator.emptyCheckingContainer(requireContext(), bi.clAttendenceForm)) return
+        if (!Validator.emptyCheckingContainer(requireActivity(), bi.clAttendenceForm)) return
 
         if (!this::form.isInitialized) {
             context?.toastUtil("App cannot work please coordinate with IT team")?.show()
@@ -176,7 +176,7 @@ class VehicleDetailFragment : FragmentBase() {
     }
 
     fun timeOutBtn(view: View) {
-        if (!Validator.emptyCheckingContainer(requireContext(), bi.clAttendenceForm)) return
+        if (!Validator.emptyCheckingContainer(requireActivity(), bi.clAttendenceForm)) return
 
         if (Integer.parseInt(bi.updateMeterOut.text.toString()) < Integer.parseInt(bi.updateMeterIn.text.toString())) {
 //            "MeterOut Reading should be greater than or equal to MeterIn Reading".toastUtil().show()

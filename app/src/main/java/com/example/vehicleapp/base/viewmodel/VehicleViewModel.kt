@@ -1,12 +1,10 @@
 package com.example.vehicleapp.base.viewmodel
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vehicleapp.R
 import com.example.vehicleapp.base.repository.ResponseStates
 import com.example.vehicleapp.base.repository.ResponseStatusCallbacks
 import com.example.vehicleapp.base.repository.ResultCallBack
@@ -21,8 +19,8 @@ import com.example.vehicleapp.model.VehiclesItem
 import com.example.vehicleapp.utils.CONSTANTS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
@@ -48,9 +46,10 @@ class VehicleViewModel @Inject constructor(
     val locationId =
         sharedPreferences.get(CONSTANTS.USER_LOCATION, StringUtils.EMPTY) ?: StringUtils.EMPTY
 
-    private val _vehicleListDB = MutableSharedFlow<ResponseStates<ArrayList<VehicleAttendance>?>>()
-    val vehicleListDB: SharedFlow<ResponseStates<ArrayList<VehicleAttendance>?>>
-        get() = _vehicleListDB
+    private val _vehicleListDB =
+        MutableStateFlow<ResponseStates<ArrayList<VehicleAttendance>>>(ResponseStates.Success(data = arrayListOf()))
+    val vehicleListDB = _vehicleListDB.asStateFlow()
+
 
     private val _selectedVehicle: MutableLiveData<ResponseStatusCallbacks<VehiclesItem>> =
         MutableLiveData()
@@ -71,7 +70,7 @@ class VehicleViewModel @Inject constructor(
     fun downloadingVehicles() {
         apiDownloadingDataProgress(true)
         viewModelScope.launch {
-            vehicleUseCaseRemote.invoke(locationId).let { data ->
+            vehicleUseCaseRemote(locationId).let { data ->
                 when (data) {
                     is ResultCallBack.CallException -> {
                         apiDownloadingDataProgress(false)
@@ -100,24 +99,8 @@ class VehicleViewModel @Inject constructor(
     * */
     fun fetchVehiclesFromLocalDB(locationId: String) {
         viewModelScope.launch {
-            _vehicleListDB.emit(ResponseStates.Loading)
-            try {
-                vehicleUseCaseLocal(locationId).collectLatest { dataset ->
-                    if (dataset.isEmpty())
-                        _vehicleListDB.emit(
-                            ResponseStates.Success(
-                                data = null,
-                                message = context.getString(R.string.empty_vehicle_message)
-                            )
-                        )
-                    else {
-                        val sortedVehiclesList = dataset as ArrayList
-                        sortedVehiclesList.sortByDescending { it.attendance?.let { item -> item.meter_in != null && item.meter_out == null } }
-                        _vehicleListDB.emit(ResponseStates.Success(sortedVehiclesList))
-                    }
-                }
-            } catch (e: Exception) {
-                _vehicleListDB.emit(ResponseStates.Error(e.message.toString()))
+            vehicleUseCaseLocal.invoke(locationId).collectLatest {
+                _vehicleListDB.emit(it)
             }
         }
     }
@@ -149,27 +132,11 @@ class VehicleViewModel @Inject constructor(
     * */
     private fun fetchSearchVehiclesFromLocalDB(search: String, locationId: String) {
         viewModelScope.launch {
-            _vehicleListDB.emit(ResponseStates.Loading)
-            try {
-                searchVehicleUseCaseLocal(
-                    vehicleNo = "%$search%",
-                    locationId
-                ).collectLatest { dataset ->
-                    if (dataset.isEmpty())
-                        _vehicleListDB.emit(
-                            ResponseStates.Success(
-                                data = null,
-                                message = context.getString(R.string.empty_vehicle_message)
-                            )
-                        )
-                    else {
-                        val sortedVehiclesList = dataset as ArrayList
-                        sortedVehiclesList.sortByDescending { it.attendance?.let { item -> item.meter_in != null && item.meter_out == null } }
-                        _vehicleListDB.emit(ResponseStates.Success(sortedVehiclesList))
-                    }
-                }
-            } catch (e: Exception) {
-                _vehicleListDB.emit(ResponseStates.Error(e.message.toString()))
+            searchVehicleUseCaseLocal(
+                vehicleNo = "%$search%",
+                locationId
+            ).collectLatest {
+                _vehicleListDB.emit(it)
             }
         }
     }
